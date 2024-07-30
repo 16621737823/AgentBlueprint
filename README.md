@@ -1,8 +1,16 @@
 # AgentBlueprint
+## Table of Contents
+- :memo:[Overview](#overview)
+- :start2:[Concept](#concept)
+- :triangular_flag_on_post:[Development-State](#current-state)
+- :pushpin:[Getting Started](#getting-started)
+- :question:[Common Questions](#faq)
+- [License](#license)
+
 ***
-## What is AgentBlueprint
+## Overview
 AgentBlueprint is a base framework that deeply connects between application code and LLM.
-## What does AgentBlueprint have
+## Concept
 AgentBlueprint has roughly 3 parts:
 1. **Single Agent Blueprint**: A blueprint is a pre-defined structure of Data/Prompts that represents how the agent should behave in a controllable fashion.
 2. **Data-Driven Structure**: The entire framework is data-driven, meaning that most of the data variable that might be used later in the LLM is pre-generated in the framework. This allows a frictionless connection between the application data and the LLM.
@@ -68,3 +76,6 @@ APM or .apm file is a unique file format we defined, referring to Agent Blueprin
     What would he do next to react to this current situation?
    ```
    Even with the same task, providing different .apm assemblies (blueprints) results in different queries. This flexibility is core to the blueprint structure, allowing tasks to be interchangeable and customizable.
+## License
+
+This project is licensed under the [MIT](LICENSE).
