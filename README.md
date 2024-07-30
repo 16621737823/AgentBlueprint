@@ -1,7 +1,7 @@
 # AgentBlueprint
 ## Table of Contents
 - :memo:[Overview](#overview)
-- :start2:[Concept](#concept)
+- :star2:[Concept](#concept)
 - :triangular_flag_on_post:[Development-State](#current-state)
 - :pushpin:[Getting Started](#getting-started)
 - :question:[Common Questions](#faq)
