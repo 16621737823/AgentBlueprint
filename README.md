@@ -5,7 +5,7 @@ AgentBlueprint is a base framework that deeply connects between application code
 ## What does AgentBlueprint have
 AgentBlueprint has roughly 3 parts:
 1. **Single Agent Blueprint**: A blueprint is a pre-defined structure of Data/Prompts that represents how the agent should behave in a controllable fashion.
-2. **Data-Driven Structure**: The whole framework is data-driven, meaning that most of the data variable that might be used later in the LLM is pre-generated in the framework. This allows a frictionless connection between the application data and the LLM.
+2. **Data-Driven Structure**: The entire framework is data-driven, meaning that most of the data variable that might be used later in the LLM is pre-generated in the framework. This allows a frictionless connection between the application data and the LLM.
 3. **Multi-Agent Support**: Because of the data-driven structure and self-determined nature of each agent, multi-agent support is a natural feature of the framework. 
 
 ## Current State
@@ -16,8 +16,8 @@ AgentBlueprint has roughly 3 parts:
 
 ---
 # Getting Started
-1. There are two repositories in this project, one is golang and one is python. Installing both environments are required to run the project (for now).
-2. install protoc with grpc plugin for python and golang
+1. This project has two repositories: one in Golang and one in Python. Installing both environments is required to run the project (for now).
+2. install `protoc` with grpc plugin for python and golang
 ```python
 pip install grpcio-tools
 ```
@@ -25,15 +25,15 @@ pip install grpcio-tools
 go install google.golang.org/protobuf/cmd/protoc-gen-go@v1.28
 go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@v1.2
 ```
-3. The whole project is build upon data-driven structure, so the first thing to do is to define all the data/ function(data pipline) under `/DataConfig[EDIT ME]/`  that might be used later. See Section [] for detail explanation.
+3. The whole project is build upon a data-driven structure, Start by defining all data/ function(data pipline) under `/DataConfig[EDIT ME]/`  that might be used later. See Section [] for detail explanation.
 4. Run Generate.bat for windows.
-5. There are few codes that need to be implemented.
+5. Implement some code.
 - Implement the data source at `golang-client/implementation/impl_gen_XXX`
   >when the data structure is generate, the data source needs to be connected to the original source, could be a database,RAG,runtime variable,temporary cache, etc.
 
 6. Write APM (Agent Personality Module).
-> APM file is the core blueprint of each agent, it contains every task's prompt. APM assembles runtime data with a data placeholder and prompt to execute a complete query.
-7. Initialize agent at `golang-client/client_object/agent_entity.go` and deserialize the pre-defined APM to load to the AgentEntity by calling `DeserializeAPMToEntity` function.
+   > APM file is the core blueprint of each agent, it contains every task's prompt. APM assembles runtime data with a data placeholder and prompt to execute a complete query.
+7. Initialize agent at `golang-client/client_object/agent_entity.go` and deserialize the pre-defined APM to load to the `AgentEntity` by calling `DeserializeAPMToEntity` function.
 8. Run the generated pipelines at `golang-client/client_object/entity_function_gen.go` returns the result of the Query.
 ---
 ## Step by Step Guide On how to use the framework
@@ -44,16 +44,17 @@ go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@v1.2
 ---
 ## FAQ
 1. **What does DataInstance Do?** <br>
-Data Instance is the data structure of everything, it contains the data its self, context information, and chaining information of where this data is from (always another DataInstance). So you can think it as the equivalent replacement to a data variable within the agent class.
+DataInstance is the data structure that contains the data itself, context information, and chaining information indicating where this data originated (always another DataInstance). It serves as the equivalent replacement for a data variable within the agent class.
 > In our vision, this Project will be built upon Data Instance structure entirely. DataInstance is the intermediate structure that connects between blueprint's runtime data call, LLM's query result, database's data retrieval. It more of a ECS(EntityComponentSystem) design pattern.
 2. **Why uses Data-Oriented Design?** <br>
 There are many reasons for that:
-   - *More controllable and retrievable data.*<br> In an AI app development, the result that LLM returned are often used later in the application, so having a data structure that can be easily retrieved and manipulated is very handy. 
-   - *RAG support*<br> Though this project has not shown any rag support yet. I have try to play around with RAG, and it seems that a clear data structure boosts retrieval's quality a lot from a graph point of view. Also, when it comes to graph Indexing, if a structure can be provided beforehand, the indexing process will adapt to application's data structure frictionlessly.
-   - *Context Awareness*<br> A unique context reference is connected to each data instance. When it comes to retrieving logical connections between data, the context will work as a tree that can be easily traversed. The Tree of Thoughts/ Chain of Thoughts is the most common example of this. Context design also frees up the task from being strictly sequential; it can be done in parallel or execut from desire node in the past.
-   - *Blueprint Support*<br> This is where this project firstly started, we were trying to do a runtime data query with LLM at first. but to retrieve different data dynamically requires a tremendous amount of work. So we decided to build common data interface that adapts to the data indexing with whom the assembly can happen at resource level during runtime.
+   - *More controllable and retrievable data.*<br> In AI app development, results returned by LLM are often used later in the application. Hence, having a data structure that is easily retrievable and manipulable is advantageous.
+   - *RAG support*<br> Supports RAG (though not yet shown in this project). Experimentation with RAG shows that a clear data structure significantly improves retrieval quality from a graph perspective. Moreover, providing a structure beforehand facilitates frictionless indexing according to the application's data structure.
+   - *Context Awareness*<br> Each DataInstance is connected with a unique context reference. This enables easy traversal of logical connections between data, akin to a tree structure (Tree of Thoughts/Chain of Thoughts). Context design also allows tasks to be executed in parallel or from desired nodes in the past, rather than strictly sequentially.
+   - *Blueprint Support*<br> Initially, this project aimed to perform runtime data queries with LLM. However, dynamically retrieving different data required extensive work. Therefore, we developed a common data interface that adapts to data indexing, enabling assembly at the resource level during runtime.
 3. **What Is .apm File** <br>
-APM or .apm file is a unique file format we defined, when I refer to Agent Blueprint / Assembly Structure. I mean this. It basically holds prompt information, with protobuf encoding. Each tasks can hold one or more unique LLM/LM prompts, and in that prompt all the runtime/static data is replaced by a placeholder. where assembly happens when the task is called, then the placeholder will be replaced by the actual data. It's something that looks like this:
+APM or .apm file is a unique file format we defined, referring to Agent Blueprint/Assembly Structure. It encapsulates prompt information using protobuf encoding. Each task can contain one or more unique LLM/LM prompts, where runtime/static data is replaced by a placeholder. Assembly occurs when the task is called, and placeholders are substituted with actual data.<br>
+   #### Examples:
     ```
     "{agent_information} \n" + \
     "Yesterday activities: {daily_summary} \n" + \
@@ -66,5 +67,4 @@ APM or .apm file is a unique file format we defined, when I refer to Agent Bluep
     Now {agent_name} is at {agent_location} in the {current_time},
     What would he do next to react to this current situation?
    ```
-    Even with the same task, to provide different .apm assemblies(blueprint) will result in different queries. This is the core of the blueprint structure - to make every task exchangeable and customizable.
-4. 
+   Even with the same task, providing different .apm assemblies (blueprints) results in different queries. This flexibility is core to the blueprint structure, allowing tasks to be interchangeable and customizable.
