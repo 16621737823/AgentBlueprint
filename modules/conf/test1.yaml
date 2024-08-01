@@ -1,7 +1,8 @@
 ModuleUUID: "placeholder"
 DataDescriptor:
   None:
-    NoDescriptor: 00
+    Single: 00
+    List: 01
   Current:
     Current: 20
 
