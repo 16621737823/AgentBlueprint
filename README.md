@@ -5,6 +5,8 @@
 - :triangular_flag_on_post:[Development-State](#current-state)
 - :pushpin:[Getting Started](#getting-started)
 - :question:[Common Questions](#faq)
+- :paintbrush:[Project Structure](#project-structure)
+- :clipboard:[Data Structure](#data-structure)
 - [License](#license)
 
 ***
@@ -16,6 +18,10 @@ AgentBlueprint has roughly 3 parts:
 2. **Data-Driven Structure**: The entire framework is data-driven, meaning that most of the data variable that might be used later in the LLM is pre-generated in the framework. This allows a frictionless connection between the application data and the LLM.
 3. **Multi-Agent Support**: Because of the data-driven structure and self-determined nature of each agent, multi-agent support is a natural feature of the framework. 
 
+## Project Structure
+![Project Structure](./resouce/user_classify.png)
+## Data Structure
+![Data Structure](./resouce/design_layer.png)
 ## Current State
 - [X] Game Agent
 - [ ] Python Support
