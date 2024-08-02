@@ -19,9 +19,8 @@ AgentBlueprint has roughly 3 parts:
 3. **Multi-Agent Support**: Because of the data-driven structure and self-determined nature of each agent, multi-agent support is a natural feature of the framework. 
 
 ## Project Structure
-![Project Structure](./resouce/user_classify.png)
-## Data Structure
-![Data Structure](./resouce/design_layer.png)
+![Project Structure](./resouce/overview.png)
+
 ## Current State
 - [X] Game Agent
 - [ ] Python Support
