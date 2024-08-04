@@ -26,13 +26,13 @@ go install google.golang.org/protobuf/cmd/protoc-gen-go@v1.28
 go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@v1.2
 ```
 3. The whole project is build upon data-driven structure, so the first thing to do is to define all the data/ function(data pipline) under `/DataConfig[EDIT ME]/`  that might be used later. See Section [] for detail explanation.
-4. Run Generate.bat for windows.
+4. Run Generate.bat for windows or Generate.sh for linux.
 5. There are few codes that need to be implemented.
 - Implement the data source at `golang-client/implementation/impl_gen_XXX`
   >when the data structure is generate, the data source needs to be connected to the original source, could be a database,RAG,runtime variable,temporary cache, etc.
 
 6. Write APM (Agent Personality Module).
-> APM file is the core blueprint of each agent, it contains every task's prompt. APM assembles runtime data with a data placeholder and prompt to execute a complete query.
+   > APM file is the core blueprint of each agent, it contains every task's prompt. APM assembles runtime data with a data placeholder and prompt to execute a complete query.
 7. Initialize agent at `golang-client/client_object/agent_entity.go` and deserialize the pre-defined APM to load to the AgentEntity by calling `DeserializeAPMToEntity` function.
 8. Run the generated pipelines at `golang-client/client_object/entity_function_gen.go` returns the result of the Query.
 ---
