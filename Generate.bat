@@ -3,7 +3,9 @@
 
 xcopy ".\DataConfig[EDIT ME]\*.yaml" ".\golang-client\config\" /E /I /Y
 xcopy ".\DataConfig[EDIT ME]\*.yaml" ".\python-server\config\" /E /I /Y
-
+if not exist ".\golang-client\message\proto" (
+    mkdir ".\golang-client\message\proto"
+    )
 
 set py_out_path=python-server
 set go_module=golang-client/message
