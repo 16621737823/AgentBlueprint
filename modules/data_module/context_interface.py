@@ -1,4 +1,4 @@
-from data_interface import DataInterface, DataListInterface
+from data_module.data_interface import DataInterface, DataListInterface
 from enum import Enum
 import threading
 
@@ -46,15 +46,21 @@ class DataInstanceContext:
 
 class QueryContext:
     def __init__(self,**kwargs):
-        pass
-
-
+        self.input_text = ""
+        self.input_data = None
+        self.target_index = 0
+        self.context_root = None
+        self.root_cache = dict()
+        self.response = None
+    def set_response(self,response):
+        self.response = response
 
 
 
 class DataNodeContext(QueryContext):
     def __init__(self,**kwargs):
         super().__init__(**kwargs)
+
         if "reference" in kwargs:
             if isinstance(kwargs['reference'],(DataInterface,DataListInterface)):
                 self.reference = kwargs['reference']
@@ -67,11 +73,20 @@ class DataNodeContext(QueryContext):
                 raise ValueError("parent_context must be an instance of DataInstanceContext")
         else:
             raise ValueError("parent_context is required")
+        self.input_text = self.parent_context.input_text
+        self.input_data = self.parent_context.input_data
+        self.root_cache = self.parent_context.root_cache
+        self.target_index = self.parent_context.target_index
+        self.context_root = self.parent_context.context_root
+        self.response = self.parent_context.response
     def __getitem__(self, item):
         if item == "reference":
             return self.reference
         else:
             return self.parent_context[item]
+
+
+
 
 
 
@@ -88,11 +103,6 @@ class FunctionNodeContext(QueryContext):
                 self.input_data = kwargs['input_data']
             else:
                 raise ValueError("input_data must be an instance of DataInterface or DataListInterface")
-        if "root_cache" in kwargs:
-            if isinstance(kwargs['root_cache'],dict):
-                self.root_cache = kwargs['root_cache']
-            else:
-                raise ValueError("root_cache must be a dictionary")
         if "target_index" in kwargs:
             if isinstance(kwargs['target_index'],int):
                 self.target_index = kwargs['target_index']
@@ -103,4 +113,5 @@ class FunctionNodeContext(QueryContext):
                 self.context_root = kwargs['context_root']
             else:
                 raise ValueError("context_root must be an instance of DataInstanceContext")
+
 
