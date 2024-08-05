@@ -8,3 +8,5 @@ sentence_transformers
 transformers
 pyyaml
 pandas
+pymongo
+pymongo[srv]

@@ -38,6 +38,8 @@ pip install grpcio-tools
 go install google.golang.org/protobuf/cmd/protoc-gen-go@v1.28
 go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@v1.2
 ```
+s that need to be implemented.
+
 3. The whole project is build upon a data-driven structure, Start by defining all data/ function(data pipline) under `/DataConfig[EDIT ME]/`  that might be used later. See Section [] for detail explanation.
 4. Run Generate.bat for windows.
 5. Implement some code.
