@@ -7,9 +7,38 @@ DataDescriptor:
     Current: 20
 
 #Support int32 || string || bool || uint64 || float32 || uint32
-DataIndex:
-  Action:
+GeneralData:
+  ParsedAction:
     index: 1001
+    property:
+      EmojiList:
+        index: 01
+        type: "EmojiData"
+    descriptor:
+
+InternalData:
+  EmojiData:
+    index: 2002
+    property:
+      EmojiDescription:
+        index: 01
+        type: string
+      EmojiUnicode:
+        index: 02
+        type: string
+    descriptor:
+
+# Connector Data Index Parameters Connects to Specific Data Index Properties
+ConnectorData:
+  RoutePlan:
+    index: 3001
+    parameters:
+      Origin:
+        index: 01
+        type: string
+      Destination:
+        index: 02
+        type: string
     property:
       ActionDescription:
         index: 01
@@ -26,23 +55,4 @@ DataIndex:
     descriptor:
       - Current
 
-  ParsedAction:
-    index: 4001
-    property:
-      EmojiList:
-        index: 01
-        type: "EmojiData"
-    descriptor:
-
-InternalDataIndex:
-  EmojiData:
-    index: 1002
-    property:
-      EmojiDescription:
-        index: 01
-        type: string
-      EmojiUnicode:
-        index: 02
-        type: string
-    descriptor:
 

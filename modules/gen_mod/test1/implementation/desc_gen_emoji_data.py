@@ -1,4 +1,4 @@
-from data_module.data_interface import DataInterface, overwrite_descriptor, DataListInterface
+from data_module import DataInterface, DataListInterface
 
 class EmojiData(DataInterface):
     def __init__(self, data: dict = None):
@@ -7,10 +7,9 @@ class EmojiData(DataInterface):
         super().__init__(default_prop)
         self.description_overwrite()
     def description_overwrite(self):
-        #@overwrite_descriptor #add this decorator at the overwriting properties
-        #def emoji_data_description(self):
-        #    return f" EmojiData NEW Description is : {self.get_data_str('emoji_data_description')}"
-        # emoji_data_description(self)
+        #def property_name(self):
+        #    return f" EmojiData NEW Description is : {self.get_data_str('property_name')}"
+        # self.overwrite(property_name)
         return
     def get_property_from_index(self,index: int):
         if index == 0:

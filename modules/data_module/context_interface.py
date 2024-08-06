@@ -1,8 +1,7 @@
-from data_module.data_interface import DataInterface, DataListInterface
+from . import *
 from enum import Enum
 import threading
 
-from events import EventChannel
 
 class ContextState(Enum):
     INITIALIZED = 0,
@@ -47,7 +46,7 @@ class DataInstanceContext:
 class QueryContext:
     def __init__(self,**kwargs):
         self.input_text = ""
-        self.input_data = None
+        self.input_params = dict()
         self.target_index = 0
         self.context_root = None
         self.root_cache = dict()
@@ -74,7 +73,7 @@ class DataNodeContext(QueryContext):
         else:
             raise ValueError("parent_context is required")
         self.input_text = self.parent_context.input_text
-        self.input_data = self.parent_context.input_data
+        self.input_params = self.parent_context.input_params
         self.root_cache = self.parent_context.root_cache
         self.target_index = self.parent_context.target_index
         self.context_root = self.parent_context.context_root
@@ -98,11 +97,11 @@ class FunctionNodeContext(QueryContext):
                 self.input_text = kwargs['input_text']
             else:
                 raise ValueError("input_text must be a string")
-        if "input_data" in kwargs:
-            if isinstance(kwargs['input_data'],(DataInterface,DataListInterface)):
-                self.input_data = kwargs['input_data']
+        if "input_params" in kwargs:
+            if isinstance(kwargs['input_params'],dict):
+                self.input_params = kwargs['input_params']
             else:
-                raise ValueError("input_data must be an instance of DataInterface or DataListInterface")
+                raise ValueError("input_data must be an instance of dict")
         if "target_index" in kwargs:
             if isinstance(kwargs['target_index'],int):
                 self.target_index = kwargs['target_index']

@@ -40,12 +40,10 @@ class DataInterface:
         return self._data
     def default_str(self):
         return "".join(self._desc_data[key] + "." for key in self._data.keys() if self._data[key] is not None).strip(".")
-def overwrite_descriptor(func):
-    def overwrite(obj,*args):
+    def overwrite(self, func):
         snake_key = re.sub('([a-z0-9])([A-Z])', r'\1_\2', func.__name__).lower()
-        obj._desc_data[snake_key] = func(obj,*args)
-        # setattr(obj,func.__name__,func(obj,*args))
-    return overwrite
+        self._desc_data[snake_key] = func(self)
+
 
 class DataListInterface:
     def __init__(self, data: list):

@@ -1,10 +1,7 @@
-from data_module.agent_interface import AgentInterface
-from data_module.context_interface import QueryContext
-from data_module.data_interface import DataInterface
-
-
+from . import *
 class BaseDataManager:
     def __init__(self):
+        print(self.__name__ + " is initialized")
         pass
 
     def get_descriptor(self, desc_index:int, d:AgentInterface, ctx:QueryContext) -> DataInterface:
@@ -12,3 +9,6 @@ class BaseDataManager:
 
     def set_service_response(self, response:DataInterface, ctx:QueryContext):
         raise NotImplementedError
+
+def get_manager(index:int):
+    return

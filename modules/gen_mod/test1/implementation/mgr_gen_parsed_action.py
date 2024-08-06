@@ -1,8 +1,5 @@
-from data_module.agent_interface import AgentInterface
-from data_module.context_interface import QueryContext
-from data_module.data_interface import DataInterface, DataListInterface
-from data_module.manager_interface import BaseDataManager
-from desc_gen_parsed_action import ParsedAction, ParsedActionList
+from data_module import AgentInterface, QueryContext, DataInterface, DataListInterface, BaseDataManager
+from . import ParsedAction, ParsedActionList
 
 class ParsedactionManager(BaseDataManager):
     def set_service_response(self, response, ctx: QueryContext):
