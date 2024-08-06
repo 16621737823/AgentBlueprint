@@ -7,12 +7,13 @@ message NodeConnector{
 }
 message TaskNode{
   uint64 node_id = 1;
-  NodeConnector node_structure = 3;
-  FunctionParams function_param = 2;
+  NodeConnector node_structure = 2;
+  FunctionParams function_param = 3;
 }
 message DataNode{
   uint64 node_id = 1;
-  NodeConnector node_structure = 2;
+  string uuid = 2;
+  NodeConnector node_structure = 3;
 }
 
 message apmFile{

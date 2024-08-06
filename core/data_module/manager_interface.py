@@ -1,5 +1,5 @@
 from . import *
-class BaseDataManager:
+class DataManagerInterface:
     def __init__(self):
         print(self.__name__ + " is initialized")
         pass

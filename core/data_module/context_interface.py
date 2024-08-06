@@ -53,6 +53,10 @@ class QueryContext:
         self.response = None
     def set_response(self,response):
         self.response = response
+    def set_cache(self,key:int,value:DataInterface or DataListInterface):
+        self.root_cache[key] = value
+    def get_cache(self,key)->DataInterface or DataListInterface:
+        return self.root_cache.get(key,None)
 
 
 

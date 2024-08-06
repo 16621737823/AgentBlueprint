@@ -1,7 +1,7 @@
-from data_module import AgentNetworkInterface, QueryContext, DataInterface, DataListInterface, BaseDataManager
+from data_module import AgentNetworkInterface, QueryContext, DataInterface, DataListInterface, DataManagerInterface
 from . import RoutePlan, RoutePlanList
 
-class RoutePlanManager(BaseDataManager):
+class RoutePlanManager(DataManagerInterface):
     def set_service_response(self, response, ctx: QueryContext):
         if isinstance(response, (RoutePlan, RoutePlanList)):
             ctx.set_response(response)

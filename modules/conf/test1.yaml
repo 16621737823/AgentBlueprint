@@ -18,7 +18,7 @@ GeneralData:
 
 InternalData:
   EmojiData:
-    index: 2001
+    index: 1002
     property:
       EmojiDescription:
         index: 01
@@ -31,7 +31,7 @@ InternalData:
 # Connector Data Index Parameters Connects to Specific Data Index Properties
 ConnectorData:
   RoutePlan:
-    index: 3001
+    index: 1003
     parameters:
       Origin:
         index: 01

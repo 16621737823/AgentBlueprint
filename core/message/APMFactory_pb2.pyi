@@ -29,12 +29,14 @@ class TaskNode(_message.Message):
     def __init__(self, node_id: _Optional[int] = ..., node_structure: _Optional[_Union[NodeConnector, _Mapping]] = ..., function_param: _Optional[_Union[FunctionParams, _Mapping]] = ...) -> None: ...
 
 class DataNode(_message.Message):
-    __slots__ = ("node_id", "node_structure")
+    __slots__ = ("node_id", "uuid", "node_structure")
     NODE_ID_FIELD_NUMBER: _ClassVar[int]
+    UUID_FIELD_NUMBER: _ClassVar[int]
     NODE_STRUCTURE_FIELD_NUMBER: _ClassVar[int]
     node_id: int
+    uuid: str
     node_structure: NodeConnector
-    def __init__(self, node_id: _Optional[int] = ..., node_structure: _Optional[_Union[NodeConnector, _Mapping]] = ...) -> None: ...
+    def __init__(self, node_id: _Optional[int] = ..., uuid: _Optional[str] = ..., node_structure: _Optional[_Union[NodeConnector, _Mapping]] = ...) -> None: ...
 
 class apmFile(_message.Message):
     __slots__ = ("nodes",)

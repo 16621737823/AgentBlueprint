@@ -1,7 +1,7 @@
-from data_module import AgentInterface, QueryContext, DataInterface, DataListInterface, BaseDataManager
+from data_module import AgentNetworkInterface, QueryContext, DataInterface, DataListInterface, DataManagerInterface
 from . import RoutePlan, RoutePlanList
 
-class RoutePlanManager(BaseDataManager):
+class RoutePlanManager(DataManagerInterface):
     def set_service_response(self, response, ctx: QueryContext):
         if isinstance(response, (RoutePlan, RoutePlanList)):
             ctx.set_response(response)
@@ -20,7 +20,7 @@ class RoutePlanManager(BaseDataManager):
             "destination": destination,
         }
 
-    def get_descriptor(self, desc_index:int, d:AgentInterface, ctx:QueryContext) -> DataInterface or DataListInterface:
+    def get_descriptor(self, desc_index:int, d:AgentNetworkInterface, ctx:QueryContext) -> DataInterface or DataListInterface:
         input_params = self.fetch_input_params(ctx)
         if desc_index == 0:
             return self._single(ctx, input_params)

@@ -1,6 +1,7 @@
 from data_module import DataInterface, DataListInterface
 
 class RoutePlan(DataInterface):
+    __slots__ = ["action_description","ActionDescription","duration","Duration","start_time","StartTime","end_time","EndTime",]
     def __init__(self, data: dict = None):
         default_prop = {"action_description": None,"duration": None,"start_time": None,"end_time": None,}
         default_prop.update(data)

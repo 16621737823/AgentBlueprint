@@ -1,5 +1,5 @@
-from agent_interface import AgentInterface
-from context_interface import QueryContext
-from data_interface import DataInterface, DataListInterface
-from manager_interface import BaseDataManager
-from events import EventChannel
+from .agent_interface import AgentNetworkInterface
+from .context_interface import QueryContext
+from .data_interface import DataInterface, DataListInterface
+from .manager_interface import BaseDataManager
+from .events import EventChannel

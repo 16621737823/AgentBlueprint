@@ -1,7 +1,7 @@
-from data_module import AgentNetworkInterface, QueryContext, DataInterface, DataListInterface, BaseDataManager
+from data_module import AgentNetworkInterface, QueryContext, DataInterface, DataListInterface, DataManagerInterface
 from . import ParsedAction, ParsedActionList
 
-class ParsedActionManager(BaseDataManager):
+class ParsedActionManager(DataManagerInterface):
     def set_service_response(self, response, ctx: QueryContext):
         if isinstance(response, (ParsedAction, ParsedActionList)):
             ctx.set_response(response)

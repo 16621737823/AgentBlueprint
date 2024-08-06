@@ -21,7 +21,6 @@ class DataInterface:
             prop = property(lambda self: self._desc_data[snake_key])
             setattr(self,snake_key,prop)
             setattr(self,camel_key,prop)
-            setattr(self,snake_key,prop)
 
     def get_property_from_index(self,index:int):
         raise NotImplementedError

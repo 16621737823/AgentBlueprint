@@ -14,7 +14,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x10\x41PMFactory.proto\x12\x05proto\"\x8b\x01\n\rNodeConnector\x12\x37\n\ninput_data\x18\x01 \x03(\x0b\x32#.proto.NodeConnector.InputDataEntry\x1a\x41\n\x0eInputDataEntry\x12\x0b\n\x03key\x18\x01 \x01(\x05\x12\x1e\n\x05value\x18\x02 \x01(\x0b\x32\x0f.proto.DataNode:\x02\x38\x01\"x\n\x08TaskNode\x12\x0f\n\x07node_id\x18\x01 \x01(\x04\x12,\n\x0enode_structure\x18\x03 \x01(\x0b\x32\x14.proto.NodeConnector\x12-\n\x0e\x66unction_param\x18\x02 \x01(\x0b\x32\x15.proto.FunctionParams\"I\n\x08\x44\x61taNode\x12\x0f\n\x07node_id\x18\x01 \x01(\x04\x12,\n\x0enode_structure\x18\x02 \x01(\x0b\x32\x14.proto.NodeConnector\")\n\x07\x61pmFile\x12\x1e\n\x05nodes\x18\x01 \x03(\x0b\x32\x0f.proto.TaskNode\"<\n\x0e\x46unctionParams\x12\x13\n\x0buser_prompt\x18\x01 \x01(\t\x12\x15\n\rsystem_prompt\x18\x02 \x01(\tb\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x10\x41PMFactory.proto\x12\x05proto\"\x8b\x01\n\rNodeConnector\x12\x37\n\ninput_data\x18\x01 \x03(\x0b\x32#.proto.NodeConnector.InputDataEntry\x1a\x41\n\x0eInputDataEntry\x12\x0b\n\x03key\x18\x01 \x01(\x05\x12\x1e\n\x05value\x18\x02 \x01(\x0b\x32\x0f.proto.DataNode:\x02\x38\x01\"x\n\x08TaskNode\x12\x0f\n\x07node_id\x18\x01 \x01(\x04\x12,\n\x0enode_structure\x18\x02 \x01(\x0b\x32\x14.proto.NodeConnector\x12-\n\x0e\x66unction_param\x18\x03 \x01(\x0b\x32\x15.proto.FunctionParams\"W\n\x08\x44\x61taNode\x12\x0f\n\x07node_id\x18\x01 \x01(\x04\x12\x0c\n\x04uuid\x18\x02 \x01(\t\x12,\n\x0enode_structure\x18\x03 \x01(\x0b\x32\x14.proto.NodeConnector\")\n\x07\x61pmFile\x12\x1e\n\x05nodes\x18\x01 \x03(\x0b\x32\x0f.proto.TaskNode\"<\n\x0e\x46unctionParams\x12\x13\n\x0buser_prompt\x18\x01 \x01(\t\x12\x15\n\rsystem_prompt\x18\x02 \x01(\tb\x06proto3')
 
 _globals = globals()
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, _globals)
@@ -30,9 +30,9 @@ if not _descriptor._USE_C_DESCRIPTORS:
   _globals['_TASKNODE']._serialized_start=169
   _globals['_TASKNODE']._serialized_end=289
   _globals['_DATANODE']._serialized_start=291
-  _globals['_DATANODE']._serialized_end=364
-  _globals['_APMFILE']._serialized_start=366
-  _globals['_APMFILE']._serialized_end=407
-  _globals['_FUNCTIONPARAMS']._serialized_start=409
-  _globals['_FUNCTIONPARAMS']._serialized_end=469
+  _globals['_DATANODE']._serialized_end=378
+  _globals['_APMFILE']._serialized_start=380
+  _globals['_APMFILE']._serialized_end=421
+  _globals['_FUNCTIONPARAMS']._serialized_start=423
+  _globals['_FUNCTIONPARAMS']._serialized_end=483
 # @@protoc_insertion_point(module_scope)
