@@ -32,6 +32,12 @@ def _desc_gen(data_list: dict):
             with open(conf.gen_path + f"desc_gen_{snake_key}.py", "w+") as file:
                 file.write("from data_module import DataInterface, DataListInterface\n\n")
                 file.write(f"class {key}(DataInterface):\n")
+                file.write("    __slots__ = [")
+                for (prop_key, prop) in value["property"].items():
+                    snake_prop_key = re.sub('([a-z0-9])([A-Z])', r'\1_\2', prop_key).lower()
+                    camel_prop_key = snake_prop_key.replace("_", " ").title().replace(" ", "")
+                    file.write(f"\"{snake_prop_key}\",\"{camel_prop_key}\",")
+                file.write("]\n")
                 file.write("    def __init__(self, data: dict = None):\n")
 
                 prop_dict = "{"

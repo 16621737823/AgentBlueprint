@@ -1,4 +1,4 @@
-from data_module import AgentInterface, QueryContext, DataInterface, DataListInterface, BaseDataManager
+from data_module import AgentNetworkInterface, QueryContext, DataInterface, DataListInterface, BaseDataManager
 from . import ParsedAction, ParsedActionList
 
 class ParsedActionManager(BaseDataManager):
@@ -8,7 +8,7 @@ class ParsedActionManager(BaseDataManager):
         else:
             raise ValueError("Response must be an instance of DataInterface or DataListInterface")
 
-    def get_descriptor(self, desc_index:int, d:AgentInterface, ctx:QueryContext) -> DataInterface or DataListInterface:
+    def get_descriptor(self, desc_index:int, d:AgentNetworkInterface, ctx:QueryContext) -> DataInterface or DataListInterface:
         if desc_index == 0:
             return self._single(ctx)
         elif desc_index == 1:

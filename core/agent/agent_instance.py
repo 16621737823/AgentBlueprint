@@ -1,6 +1,6 @@
 import logging
 
-from data_module import AgentInterface
+from data_module import AgentNetworkInterface
 from module_loader.data_loader import load_data_module_from_path
 
 logger = logging.getLogger(__name__)
@@ -10,7 +10,7 @@ handeler.setFormatter(formatter)
 logger.addHandler(handeler)
 logger.setLevel(logging.DEBUG)
 
-class Agent(AgentInterface):
+class AgentNetwork(AgentNetworkInterface):
     def subscribe_to_data(self, mod_name: str):
         path = f"load_modules.{mod_name}.implementation"
         try:

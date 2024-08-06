@@ -1,6 +1,7 @@
 from data_module import DataInterface, DataListInterface
 
 class EmojiData(DataInterface):
+    __slots__ = ["emoji_description","EmojiDescription","emoji_unicode","EmojiUnicode",]
     def __init__(self, data: dict = None):
         default_prop = {"emoji_description": None,"emoji_unicode": None,}
         default_prop.update(data)

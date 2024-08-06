@@ -2,7 +2,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
-class AgentInterface:
+class AgentNetworkInterface:
     def __init__(self):
         self.subscribed_data = []
         self.data_manager = dict()
