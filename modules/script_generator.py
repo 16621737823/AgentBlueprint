@@ -1,14 +1,19 @@
 import logging
 import os.path
 import re
+import uuid
 
 import yaml
 
 from util.dict_util import update_without_overwrite
 
-mod_name = "test1"
+class conf:
+    mod_name = ""
+    gen_path = ""
+    gen_uuid = ""
+
 data_conf_path = "conf/"
-gen_path = f"gen_mod/{mod_name}/implementation/"
+ver_file = "gen_mod/version.txt"
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -18,13 +23,13 @@ handler.setFormatter(formatter)
 logger.addHandler(handler)
 
 
-def desc_gen(data_list: dict):
+def _desc_gen(data_list: dict):
 
     for (_, val_dict) in data_list.items():
         for (key, value) in val_dict.items():
             snake_key = re.sub('([a-z0-9])([A-Z])', r'\1_\2', key).lower()
             camel_key = key.replace("_", " ").title().replace(" ", "")
-            with open(gen_path + f"desc_gen_{snake_key}.py", "w+") as file:
+            with open(conf.gen_path + f"desc_gen_{snake_key}.py", "w+") as file:
                 file.write("from data_module import DataInterface, DataListInterface\n\n")
                 file.write(f"class {key}(DataInterface):\n")
                 file.write("    def __init__(self, data: dict = None):\n")
@@ -55,17 +60,19 @@ def desc_gen(data_list: dict):
                 file.write(f"class {key}List(DataListInterface):\n")
                 file.write("    def __init__(self, data: list):\n")
                 file.write("        super().__init__(data)\n")
-            with open(gen_path + "__init__.py", "a") as file:
+            with open(conf.gen_path + "__init__.py", "a") as file:
                 file.write(f"from .desc_gen_{snake_key} import {key}, {key}List\n")
 
-def mgr_gen(data_list: dict,desc_list: dict):
+def _mgr_gen(data_list: dict, desc_list: dict):
+    dict_str = "{"
+    import_list_str = "from . import "
     for (type, val_dict) in data_list.items():
         if type == "InternalData":
             continue
         for (key, value) in val_dict.items():
             snake_key = re.sub('([a-z0-9])([A-Z])', r'\1_\2', key).lower()
-            camel_key = key.replace("_", " ").title().replace(" ", "")
-            with open(gen_path + f"mgr_gen_{snake_key}.py", "w+") as file:
+            camel_key = snake_key.replace("_", " ").title().replace(" ", "")
+            with open(conf.gen_path + f"mgr_gen_{snake_key}.py", "w+") as file:
                 file.write("from data_module import AgentInterface, QueryContext, DataInterface, DataListInterface, BaseDataManager\n")
                 file.write(f"from . import {key}, {key}List\n\n")
                 file.write(f"class {camel_key}Manager(BaseDataManager):\n")
@@ -146,17 +153,46 @@ def mgr_gen(data_list: dict,desc_list: dict):
                             file.write("        #TODO: implement me, this is where connects to a datasource, could be a database or a service\n")
                             file.write(f"        raise NotImplementedError\n")
                             file.write("\n")
-            with open(gen_path + "__init__.py", "a") as file:
-                file.write(f"from .mgr_gen_{snake_key} import {camel_key}Manager\n")
+            with open(conf.gen_path + "__init__.py", "a") as init_file:
+                init_file.write(f"from .mgr_gen_{snake_key} import {camel_key}Manager\n")
+            import_list_str += f" {camel_key}Manager,"
+            dict_str += f" {value['index']}: {camel_key}Manager,"
+    import_list_str = import_list_str.strip(",")
+    dict_str = dict_str.strip(",")
+    dict_str += "}"
+    with open(conf.gen_path + f"mgr_list_gen.py", "w+") as list_file:
+        list_file.write("import uuid\n")
+        list_file.write(f"{import_list_str}")
+
+        list_file.write("\n")
+        list_file.write("def get_mgr_list():\n")
+        list_file.write(f"    return \"{conf.gen_uuid}\",{dict_str}\n")
+    with open(conf.gen_path + "__init__.py", "a") as file:
+        file.write(f"from .mgr_list_gen import get_mgr_list\n")
+    with open(ver_file, "r+") as file:
+        lines = file.readlines()
+    with open(ver_file,"w") as file:
+        #TODO There should be a unique id associated with each module after open up market place, plus a version id
+        for line in lines:
+            if conf.mod_name not in line:
+                file.write(line)
+        file.write(f"{conf.mod_name} : {conf.gen_uuid}\n")
 
 
-def generate():
+
+
+def generate(mod_name="default"):
+    conf.mod_name = mod_name
+    conf.gen_path = f"gen_mod/{mod_name}/implementation/"
+    conf.gen_uuid = uuid.uuid1()
     data_list = {
         "GeneralData": {},
         "InternalData": {},
         "ConnectorData": {}
     }
     desc_list = {}
+    with open(conf.gen_path + "__init__.py", "w+") as file:
+        file.write("######## package import ########\n")
     for file in os.listdir(data_conf_path):
         dataConf = yaml.load(open(data_conf_path + file, 'r'), Loader=yaml.FullLoader)
         try:
@@ -175,8 +211,8 @@ def generate():
             update_without_overwrite(desc_list, dataConf["DataDescriptor"])
         except ValueError as e:
             logger.warning(f"[codeGen]Warning on reading multiple Conf files On descriptor Generation: {e}")
-    desc_gen(data_list)
-    mgr_gen(data_list,desc_list)
+    _desc_gen(data_list)
+    _mgr_gen(data_list, desc_list)
 
 
-generate()
+generate("test1")
