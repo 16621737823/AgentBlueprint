@@ -1,5 +1,7 @@
 import logging
 
+from . import DataManagerInterface
+
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 class AgentNetworkInterface:
@@ -8,7 +10,7 @@ class AgentNetworkInterface:
         self.data_manager = dict()
         self.task_manager = dict()
 
-    def get_data_manager(self,uuid:str,index: int):
+    def get_data_manager(self,uuid:str,index: int)->DataManagerInterface:
         if uuid in self.data_manager:
             if isinstance(self.data_manager[uuid],dict):
                 if index in self.data_manager[uuid]:

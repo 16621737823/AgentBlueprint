@@ -45,8 +45,9 @@ class DataInstanceContext:
 
 class QueryContext:
     def __init__(self,**kwargs):
-        self.input_text = ""
-        self.input_params = dict()
+        self.usr_prompt = ""
+        self.param_data = dict()
+        self.usr_input_data = dict()
         self.target_index = 0
         self.context_root = None
         self.root_cache = dict()
@@ -57,6 +58,14 @@ class QueryContext:
         self.root_cache[key] = value
     def get_cache(self,key)->DataInterface or DataListInterface:
         return self.root_cache.get(key,None)
+    def set_param_data(self, key:int, value):
+        self.param_data[key] = value
+    def get_param_data(self, key:int):
+        return self.param_data.get(key, None)
+    def set_usr_input_data(self, key:int, value: DataInterface or DataListInterface):
+        self.usr_input_data[key] = value
+    def get_usr_input_data(self, key:int)-> DataInterface or DataListInterface:
+        return self.usr_input_data.get(key, None)
 
 
 
@@ -69,15 +78,23 @@ class DataNodeContext(QueryContext):
                 self.reference = kwargs['reference']
             else:
                 raise ValueError("reference must be an instance of DataInterface or DataListInterface")
+
+        if "param_data" in kwargs:
+            if isinstance(kwargs['param_data'],dict):
+                self.param_data = kwargs['param_data']
+            else:
+                raise ValueError("param_data must be an instance of dict")
+
         if "parent_context" in kwargs:
-            if isinstance(kwargs['parent_context'],DataInstanceContext):
+            if isinstance(kwargs['parent_context'], DataInstanceContext):
                 self.parent_context = kwargs['parent_context']
             else:
                 raise ValueError("parent_context must be an instance of DataInstanceContext")
         else:
             raise ValueError("parent_context is required")
-        self.input_text = self.parent_context.input_text
-        self.input_params = self.parent_context.input_params
+
+        self.usr_prompt = self.parent_context.usr_prompt
+        self.usr_input_data = self.parent_context.usr_input_data
         self.root_cache = self.parent_context.root_cache
         self.target_index = self.parent_context.target_index
         self.context_root = self.parent_context.context_root
@@ -96,16 +113,16 @@ class DataNodeContext(QueryContext):
 class FunctionNodeContext(QueryContext):
     def __init__(self,**kwargs):
         super().__init__(**kwargs)
-        if 'input_text' in kwargs:
-            if isinstance(kwargs['input_text'],str):
-                self.input_text = kwargs['input_text']
+        if 'usr_prompt' in kwargs:
+            if isinstance(kwargs['usr_prompt'],str):
+                self.usr_prompt = kwargs['usr_prompt']
             else:
-                raise ValueError("input_text must be a string")
-        if "input_params" in kwargs:
-            if isinstance(kwargs['input_params'],dict):
-                self.input_params = kwargs['input_params']
+                raise ValueError("usr_prompt must be a string")
+        if "usr_input_data" in kwargs:
+            if isinstance(kwargs['usr_input_data'],dict):
+                self.usr_input_data = kwargs['usr_input_data']
             else:
-                raise ValueError("input_data must be an instance of dict")
+                raise ValueError("usr_input_data must be an instance of dict")
         if "target_index" in kwargs:
             if isinstance(kwargs['target_index'],int):
                 self.target_index = kwargs['target_index']

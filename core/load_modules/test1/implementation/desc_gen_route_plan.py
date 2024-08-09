@@ -12,17 +12,17 @@ class RoutePlan(DataInterface):
         #    return f" RoutePlan NEW Description is : {self.get_data_str('property_name')}"
         # self.overwrite(property_name)
         return
-    def get_property_from_index(self,index: int):
+    def get_property_str_from_index(self,index: int)->(any, str):
         if index == 0:
-            return self.default(),self.default_str()
+            return self,self.default_str()
         elif index == 1:
-            return self.default(),self.action_description
+            return self.get("action_description"),self.action_description
         elif index == 2:
-            return self.default(),self.duration
+            return self.get("duration"),self.duration
         elif index == 3:
-            return self.default(),self.start_time
+            return self.get("start_time"),self.start_time
         elif index == 4:
-            return self.default(),self.end_time
+            return self.get("end_time"),self.end_time
 
 class RoutePlanList(DataListInterface):
     def __init__(self, data: list):

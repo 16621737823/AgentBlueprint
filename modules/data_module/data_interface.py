@@ -10,30 +10,23 @@ class DataInterface:
         return self.default_str()
     def _construct_data(self,data:dict):
         for key in data.keys():
-            camel_key = key.replace("_"," ").title().replace(" ","")
             snake_key = re.sub('([a-z0-9])([A-Z])', r'\1_\2', key).lower()
+            camel_key = snake_key.replace("_"," ").title().replace(" ","")
             self._data[snake_key] = data[key]
-            # self._data[camel_key] = data_prt
-            # self._data[snake_key] = data_prt
             self._desc_data[snake_key] = f"{self.__class__.__name__}'s {camel_key} is {str(self._data[snake_key])}"
-            # self._desc_data[camel_key] = desc_prt
-            # self._desc_data[snake_key] = desc_prt
             prop = property(lambda self: self._desc_data[snake_key])
             setattr(self,snake_key,prop)
             setattr(self,camel_key,prop)
 
-    def get_property_from_index(self,index:int):
+    def get_property_from_index(self, index:int)->(any, str):
         raise NotImplementedError
 
     def get(self,key:str):
-        return self._data[key]
-    def get_data_str(self, key:str):
-        return str(self._data[key])
-    def get_desc(self,key:str):
-        return self._desc_data[key]
-
+        snake_key = re.sub('([a-z0-9])([A-Z])', r'\1_\2', key).lower()
+        return self._data[snake_key]
     def set(self,key:str,value):
-        setattr(self._data,key,value)
+        snake_key = re.sub('([a-z0-9])([A-Z])', r'\1_\2', key).lower()
+        self._data[snake_key] = value
 
     def default(self):
         return self._data
@@ -57,8 +50,9 @@ class DataListInterface:
         else:
             raise ValueError("All elements in data must be dictionaries")
 
-    def get_property_from_index(self, index: int):
+    def get_property_str_from_index(self, index: int):
         list_str = f"{self.__class__.__name__}"
         for (i, item) in enumerate(self._data):
-            list_str += f"{i}: {item.get_property_from_index(index)}\n"
-        return self._data,list_str
+            _,item_str = item.get_property_from_index(index)
+            list_str += f"{i}: {item_str}\n"
+        return list_str

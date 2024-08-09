@@ -12,11 +12,11 @@ class ParsedAction(DataInterface):
         #    return f" ParsedAction NEW Description is : {self.get_data_str('property_name')}"
         # self.overwrite(property_name)
         return
-    def get_property_from_index(self,index: int):
+    def get_property_str_from_index(self,index: int)->(any, str):
         if index == 0:
-            return self.default(),self.default_str()
+            return self,self.default_str()
         elif index == 1:
-            return self.default(),self.emoji_list
+            return self.get("emoji_list"),self.emoji_list
 
 class ParsedActionList(DataListInterface):
     def __init__(self, data: list):
