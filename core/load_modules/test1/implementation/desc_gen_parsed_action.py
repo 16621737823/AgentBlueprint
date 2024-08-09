@@ -1,7 +1,9 @@
+from pydantic import BaseModel
 from data_module import DataInterface, DataListInterface
 
-class ParsedAction(DataInterface):
-    __slots__ = ["emoji_list","EmojiList",]
+class ParsedAction(DataInterface,BaseModel):
+    from .desc_gen_emoji_data import EmojiData
+    emoji_list: EmojiData
     def __init__(self, data: dict = None):
         default_prop = {"emoji_list": None,}
         default_prop.update(data)

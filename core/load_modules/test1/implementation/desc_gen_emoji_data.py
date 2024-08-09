@@ -1,7 +1,9 @@
+from pydantic import BaseModel
 from data_module import DataInterface, DataListInterface
 
-class EmojiData(DataInterface):
-    __slots__ = ["emoji_description","EmojiDescription","emoji_unicode","EmojiUnicode",]
+class EmojiData(DataInterface,BaseModel):
+    emoji_description: str
+    emoji_unicode: str
     def __init__(self, data: dict = None):
         default_prop = {"emoji_description": None,"emoji_unicode": None,}
         default_prop.update(data)

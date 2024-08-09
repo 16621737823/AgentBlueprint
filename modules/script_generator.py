@@ -22,6 +22,17 @@ formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
 handler.setFormatter(formatter)
 logger.addHandler(handler)
 
+def _convert_2_python_type(type: str)->(bool,str):
+    if type == "string":
+        return True, "str"
+    elif type == "bool":
+        return True,"bool"
+    elif type == "int32" or type == "uint32" or type == "int64" or type == "uint64":
+        return True,"int"
+    elif type == "float32" or type == "float64":
+        return True,"float"
+    else:
+        return False,type
 
 def _desc_gen(data_list: dict):
 
@@ -30,38 +41,50 @@ def _desc_gen(data_list: dict):
             snake_key = re.sub('([a-z0-9])([A-Z])', r'\1_\2', key).lower()
             camel_key = key.replace("_", " ").title().replace(" ", "")
             with open(conf.gen_path + f"desc_gen_{snake_key}.py", "w+") as file:
+                file.write("from typing import Optional\n")
+                file.write("from pydantic import BaseModel\n")
                 file.write("from data_module import DataInterface, DataListInterface\n\n")
-                file.write(f"class {key}(DataInterface):\n")
-                file.write("    __slots__ = [")
+                params = ""
                 for (prop_key, prop) in value["property"].items():
                     snake_prop_key = re.sub('([a-z0-9])([A-Z])', r'\1_\2', prop_key).lower()
-                    camel_prop_key = snake_prop_key.replace("_", " ").title().replace(" ", "")
-                    file.write(f"\"{snake_prop_key}\",\"{camel_prop_key}\",")
-                file.write("]\n")
-                file.write("    def __init__(self, data: dict = None):\n")
-
-                prop_dict = "{"
+                    # camel_prop_key = snake_prop_key.replace("_", " ").title().replace(" ", "")
+                    is_base_type, prop_type = _convert_2_python_type(prop["type"])
+                    snake_type_key = re.sub('([a-z0-9])([A-Z])', r'\1_\2', prop["type"]).lower()
+                    if is_base_type:
+                        params += f"    {snake_prop_key}: Optional[{prop_type}] = None\n"
+                    else:
+                        file.write(f"from .desc_gen_{snake_type_key} import {prop_type}\n")
+                        params += f"    {snake_prop_key}: Optional[{prop_type}] = None\n"
+                file.write(f"class {key}(BaseModel,DataInterface):\n")
+                file.write("    _data : dict\n")
+                file.write("    _desc_data : dict\n")
+                file.write(f"{params}")
+                file.write("    def __init__(self, data: dict):\n")
+                file.write("        super().__init__(**data)\n")
+                file.write("        self._init_desc_data()\n")
+                file.write("    def __str__(self):\n")
+                file.write("        return \"\".join(self._desc_data[key] + \".\" for key in self._data.keys() if self._data[key] is not None).strip(\".\")\n")
+                file.write("    def get_str(self,key:str):\n")
+                file.write("        if getattr(self,key) is not None:\n")
+                file.write("            return self._desc_data[key]\n")
+                file.write("        else:\n")
+                file.write("            return \"\"\n")
+                file.write("    def _init_desc_data(self):\n")
+                file.write("        #Can be overriden to add more description\n")
+                file.write("        self._desc_data = {\n")
                 for (prop_key, prop) in value["property"].items():
                     snake_prop_key = re.sub('([a-z0-9])([A-Z])', r'\1_\2', prop_key).lower()
-                    prop_dict += f"\"{snake_prop_key}\": None,"
-                prop_dict.strip(",")
-                prop_dict += "}"
-                file.write(f"        default_prop = {prop_dict}\n")
-                file.write("        default_prop.update(data)\n")
-                file.write("        super().__init__(default_prop)\n")
-                file.write("        self.description_overwrite()\n")
-                file.write("    def description_overwrite(self):\n")
-                file.write(f"        #def property_name(self):\n")
-                file.write(f"        #    return f\" {key} NEW Description is : {{self.get_data_str('property_name')}}\"\n")
-                file.write(f"        # self.overwrite(property_name)\n")
-                file.write("        return\n")
-                file.write("    def get_property_str_from_index(self,index: int)->(any, str):\n")
+                    file.write(f"            \"{snake_prop_key}\": f\"{key}'s {prop_key} is {{str(self.{snake_prop_key})}}\",\n")
+                file.write("        }\n")
+                file.write("    def get_property_from_index(self,index: int)->(any, str):\n")
                 file.write("        if index == 0:\n")
-                file.write("            return self,self.default_str()\n")
+                file.write("            return self,str(self)\n")
                 for (prop_key, prop) in value["property"].items():
                     snake_prop_key = re.sub('([a-z0-9])([A-Z])', r'\1_\2', prop_key).lower()
                     file.write(f"        elif index == {prop['index']}:\n")
-                    file.write(f"            return self.get(\"{snake_prop_key}\"),self.{snake_prop_key}\n")
+                    file.write(f"            return self.{snake_prop_key},self.{snake_prop_key}\n")
+                file.write("    def to_json_struct(self):\n")
+                file.write("        print(self.model_dump_json())\n")
                 file.write("\n")
                 file.write(f"class {key}List(DataListInterface):\n")
                 file.write("    def __init__(self, data: list):\n")
@@ -79,7 +102,7 @@ def _mgr_gen(data_list: dict, desc_list: dict):
             snake_key = re.sub('([a-z0-9])([A-Z])', r'\1_\2', key).lower()
             camel_key = snake_key.replace("_", " ").title().replace(" ", "")
             with open(conf.gen_path + f"mgr_gen_{snake_key}.py", "w+") as file:
-                file.write("from data_module import AgentNetworkInterface, QueryContext, DataInterface, DataListInterface, DataManagerInterface\n")
+                file.write("from data_module import QueryContext, DataInterface, DataListInterface, DataManagerInterface\n")
                 file.write(f"from . import {key}, {key}List\n\n")
                 file.write(f"class {camel_key}Manager(DataManagerInterface):\n")
                 file.write("    def set_service_response(self, response, ctx: QueryContext):\n")
@@ -102,7 +125,7 @@ def _mgr_gen(data_list: dict, desc_list: dict):
                         file.write(f"            \"{snake_param_key}\": {snake_param_key},\n")
                     file.write("        }\n")
                     file.write("\n")
-                    file.write("    def get_descriptor(self, desc_index:int, d:AgentNetworkInterface, ctx:QueryContext) -> DataInterface or DataListInterface:\n")
+                    file.write("    def get_descriptor(self, desc_index:int, ctx:QueryContext) -> DataInterface or DataListInterface:\n")
                     file.write("        connected_params = self.fetch_connected_data(ctx)\n")
                     file.write("        if desc_index == 0:\n")
                     file.write("            return self._single(ctx, connected_params)\n")
@@ -132,7 +155,7 @@ def _mgr_gen(data_list: dict, desc_list: dict):
                             file.write(f"        raise NotImplementedError\n")
                             file.write("\n")
                 else:
-                    file.write("    def get_descriptor(self, desc_index:int, d:AgentNetworkInterface, ctx:QueryContext) -> DataInterface or DataListInterface:\n")
+                    file.write("    def get_descriptor(self, desc_index:int, ctx:QueryContext) -> DataInterface or DataListInterface:\n")
                     file.write("        if desc_index == 0:\n")
                     file.write("            return self._single(ctx)\n")
                     file.write("        elif desc_index == 1:\n")

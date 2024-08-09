@@ -12,7 +12,7 @@ handler.setFormatter(formatter)
 logger.addHandler(handler)
 
 def deserialize_function_node(node:message.APMFactory_pb2.TaskNode,network:AgentNetworkInterface, context: QueryContext):
-    func_type,func_id = parse_func_index(node.node_id)
+    # func_type,func_id = parse_func_index(node.node_id)
     #func_type deprecated, all merged into mainserivcer
     function_prompt = node.function_param.user_prompt
     system_prompt = node.function_param.system_prompt
@@ -20,9 +20,9 @@ def deserialize_function_node(node:message.APMFactory_pb2.TaskNode,network:Agent
 
     # this index starts from 1 to n to match prompt format
     for (index,data_node) in node.node_structure.input_data:
-        result, result_str = deserialize_data_node(data_node,network, context)
-        function_prompt = function_prompt.replace("{" + str(index) + "}", " " + result_str)
-        system_prompt = system_prompt.replace("{" + str(index) + "}", " " + result_str)
+        data,prop,prop_str = deserialize_data_node(data_node,network, context)
+        function_prompt = function_prompt.replace("{" + str(index) + "}", " " + prop_str)
+        system_prompt = system_prompt.replace("{" + str(index) + "}", " " + prop_str)
 
     context = {
         "prompt": function_prompt,

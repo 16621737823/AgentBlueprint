@@ -1,4 +1,4 @@
-from data_module import AgentNetworkInterface, QueryContext, DataInterface, DataListInterface, DataManagerInterface
+from data_module import QueryContext, DataInterface, DataListInterface, DataManagerInterface
 from . import RoutePlan, RoutePlanList
 
 class RoutePlanManager(DataManagerInterface):
@@ -21,7 +21,7 @@ class RoutePlanManager(DataManagerInterface):
             "destination": destination,
         }
 
-    def get_descriptor(self, desc_index:int, d:AgentNetworkInterface, ctx:QueryContext) -> DataInterface or DataListInterface:
+    def get_descriptor(self, desc_index:int, ctx:QueryContext) -> DataInterface or DataListInterface:
         connected_params = self.fetch_connected_data(ctx)
         if desc_index == 0:
             return self._single(ctx, connected_params)
