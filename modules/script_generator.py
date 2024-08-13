@@ -41,8 +41,6 @@ def _desc_gen(data_list: dict):
             snake_key = re.sub('([a-z0-9])([A-Z])', r'\1_\2', key).lower()
             camel_key = key.replace("_", " ").title().replace(" ", "")
             with open(conf.gen_path + f"desc_gen_{snake_key}.py", "w+") as file:
-                file.write("import json\n")
-                file.write("from typing import Optional\n")
                 file.write("from pydantic import BaseModel, Field,ConfigDict\n")
                 file.write("from data_module import DataInterface, DataListInterface\n\n")
                 params = ""
@@ -52,12 +50,12 @@ def _desc_gen(data_list: dict):
                     is_base_type, prop_type = _convert_2_python_type(prop["type"])
                     snake_type_key = re.sub('([a-z0-9])([A-Z])', r'\1_\2', prop["type"]).lower()
                     if is_base_type:
-                        params += f"    {snake_prop_key}: {prop_type} = Field(default=None,description=\"\")\n"
+                        params += f"    {snake_prop_key}: {prop_type} = Field(description=\"\")\n"
                     else:
                         file.write(f"from .desc_gen_{snake_type_key} import {prop_type}\n")
-                        params += f"    {snake_prop_key}: {prop_type} = Field(default=None,description=\"\")\n"
+                        params += f"    {snake_prop_key}: {prop_type} = Field(description=\"\")\n"
                 file.write(f"class {key}(BaseModel,DataInterface):\n")
-                file.write("    model_config = ConfigDict(json_schema_serialization_defaults_required=True)\n")
+                file.write("    model_config = ConfigDict(json_schema_serialization_defaults_required=True,extra='forbid')\n")
                 file.write("    _data : dict\n")
                 file.write("    _desc_data : dict\n")
                 file.write(f"{params}")
@@ -86,12 +84,18 @@ def _desc_gen(data_list: dict):
                     file.write(f"        elif index == {prop['index']}:\n")
                     file.write(f"            return self.{snake_prop_key},self.{snake_prop_key}\n")
                 file.write("    @staticmethod\n")
-                file.write("    def to_json_struct()->str:\n")
-                file.write(f"        return json.dumps({key}.model_json_schema(mode='serialization'), indent=2)\n")
+                file.write("    def to_dict_struct()->dict[str,any]:\n")
+                file.write(f"        return {key}.model_json_schema(mode='serialization')\n")
                 file.write("\n")
-                file.write(f"class {key}List(DataListInterface):\n")
+                file.write(f"class {key}List(BaseModel,DataListInterface):\n")
+                file.write("    model_config = ConfigDict(json_schema_serialization_defaults_required=True, extra='forbid')\n")
+                file.write(f"    {snake_key}_list: list[{key}] = Field(description=\"\")\n")
                 file.write("    def __init__(self, data: list):\n")
                 file.write("        super().__init__(data)\n")
+                file.write("    @staticmethod\n")
+                file.write("    def to_dict_struct() -> dict[str, any]:\n")
+                file.write(f"        return {key}List.model_json_schema(mode='serialization')\n")
+
             with open(conf.gen_path + "__init__.py", "a") as file:
                 file.write(f"from .desc_gen_{snake_key} import {key}, {key}List\n")
 
@@ -111,6 +115,9 @@ def _mgr_gen(data_list: dict, desc_list: dict):
                 file.write("    @staticmethod\n")
                 file.write("    def get_class()->DataInterface:\n")
                 file.write(f"        return {key}.__mro__[0]\n")
+                file.write("    @staticmethod\n")
+                file.write("    def get_class_list()->DataListInterface:\n")
+                file.write(f"        return {key}List.__mro__[0]\n")
                 file.write("    @staticmethod\n")
                 file.write("    def set_service_response(response, ctx: QueryContext):\n")
                 file.write(f"        if isinstance(response, ({key}, {key}List)):\n")

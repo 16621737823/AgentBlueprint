@@ -6,6 +6,9 @@ class RoutePlanManager(DataManagerInterface):
     def get_class()->DataInterface:
         return RoutePlan.__mro__[0]
     @staticmethod
+    def get_class_list()->DataListInterface:
+        return RoutePlanList.__mro__[0]
+    @staticmethod
     def set_service_response(response, ctx: QueryContext):
         if isinstance(response, (RoutePlan, RoutePlanList)):
             ctx.set_response(response)

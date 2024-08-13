@@ -15,6 +15,10 @@ class DataManagerInterface:
         raise NotImplementedError
 
     @staticmethod
+    def get_class_list()->DataListInterface:
+        raise NotImplementedError
+
+    @staticmethod
     def set_service_response(response:DataInterface, ctx:QueryContext):
         raise NotImplementedError
 

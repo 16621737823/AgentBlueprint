@@ -9,7 +9,7 @@ class DataInterface:
         raise NotImplementedError
 
     @staticmethod
-    def to_json_struct():
+    def to_dict_struct()->dict[str,any]:
         raise NotImplementedError
 
 
@@ -26,6 +26,10 @@ class DataListInterface:
             self._data = [DataInterface(item) for item in data]
         else:
             raise ValueError("All elements in data must be dictionaries")
+
+    @staticmethod
+    def to_dict_struct() -> dict[str, any]:
+        raise NotImplementedError
 
     def get_property_str_from_index(self, index: int):
         list_str = f"{self.__class__.__name__}"

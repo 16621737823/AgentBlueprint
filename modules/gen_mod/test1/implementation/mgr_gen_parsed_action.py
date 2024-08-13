@@ -6,6 +6,9 @@ class ParsedActionManager(DataManagerInterface):
     def get_class()->DataInterface:
         return ParsedAction.__mro__[0]
     @staticmethod
+    def get_class_list()->DataListInterface:
+        return ParsedActionList.__mro__[0]
+    @staticmethod
     def set_service_response(response, ctx: QueryContext):
         if isinstance(response, (ParsedAction, ParsedActionList)):
             ctx.set_response(response)

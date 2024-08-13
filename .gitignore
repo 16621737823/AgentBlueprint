@@ -45,3 +45,4 @@ __pycache__
 .idea
 python-server/message/proto/*
 golang-client/message/proto/*
+*.env

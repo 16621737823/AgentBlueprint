@@ -1,16 +1,14 @@
-import json
-from typing import Optional
 from pydantic import BaseModel, Field,ConfigDict
 from data_module import DataInterface, DataListInterface
 
 class RoutePlan(BaseModel,DataInterface):
-    model_config = ConfigDict(json_schema_serialization_defaults_required=True)
+    model_config = ConfigDict(json_schema_serialization_defaults_required=True,extra='forbid')
     _data : dict
     _desc_data : dict
-    action_description: str = Field(default=None,description="")
-    duration: int = Field(default=None,description="")
-    start_time: int = Field(default=None,description="")
-    end_time: int = Field(default=None,description="")
+    action_description: str = Field(description="")
+    duration: int = Field(description="")
+    start_time: int = Field(description="")
+    end_time: int = Field(description="")
     def __init__(self, data: dict):
         super().__init__(**data)
         self._init_desc_data()
@@ -41,9 +39,14 @@ class RoutePlan(BaseModel,DataInterface):
         elif index == 4:
             return self.end_time,self.end_time
     @staticmethod
-    def to_json_struct()->str:
-        return json.dumps(RoutePlan.model_json_schema(mode='serialization'), indent=2)
+    def to_dict_struct()->dict[str,any]:
+        return RoutePlan.model_json_schema(mode='serialization')
 
-class RoutePlanList(DataListInterface):
+class RoutePlanList(BaseModel,DataListInterface):
+    model_config = ConfigDict(json_schema_serialization_defaults_required=True, extra='forbid')
+    route_plan_list: list[RoutePlan] = Field(description="")
     def __init__(self, data: list):
         super().__init__(data)
+    @staticmethod
+    def to_dict_struct() -> dict[str, any]:
+        return RoutePlanList.model_json_schema(mode='serialization')
