@@ -6,10 +6,16 @@ class DataManagerInterface:
         print(self.__class__.__name__ + " is initialized")
         pass
 
-    def get_descriptor(self, desc_index:int, ctx:QueryContext) -> DataInterface:
+    @staticmethod
+    def get_descriptor(desc_index:int, ctx:QueryContext) -> DataInterface:
         raise NotImplementedError
 
-    def set_service_response(self, response:DataInterface, ctx:QueryContext):
+    @staticmethod
+    def get_class()->DataInterface:
+        raise NotImplementedError
+
+    @staticmethod
+    def set_service_response(response:DataInterface, ctx:QueryContext):
         raise NotImplementedError
 
 def get_manager(index:int):

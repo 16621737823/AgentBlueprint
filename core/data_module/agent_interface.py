@@ -1,6 +1,6 @@
 import logging
 
-from . import DataManagerInterface
+from .manager_interface import DataManagerInterface
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)

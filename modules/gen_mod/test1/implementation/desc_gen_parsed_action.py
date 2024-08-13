@@ -1,12 +1,14 @@
+import json
 from typing import Optional
-from pydantic import BaseModel
+from pydantic import BaseModel, Field,ConfigDict
 from data_module import DataInterface, DataListInterface
 
 from .desc_gen_emoji_data import EmojiData
 class ParsedAction(BaseModel,DataInterface):
+    model_config = ConfigDict(json_schema_serialization_defaults_required=True)
     _data : dict
     _desc_data : dict
-    emoji_list: Optional[EmojiData] = None
+    emoji_list: EmojiData = Field(default=None,description="")
     def __init__(self, data: dict):
         super().__init__(**data)
         self._init_desc_data()
@@ -27,8 +29,9 @@ class ParsedAction(BaseModel,DataInterface):
             return self,str(self)
         elif index == 1:
             return self.emoji_list,self.emoji_list
-    def to_json_struct(self):
-        print(self.model_dump_json())
+    @staticmethod
+    def to_json_struct()->str:
+        return json.dumps(ParsedAction.model_json_schema(mode='serialization'), indent=2)
 
 class ParsedActionList(DataListInterface):
     def __init__(self, data: list):

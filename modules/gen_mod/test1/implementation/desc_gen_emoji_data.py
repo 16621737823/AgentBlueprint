@@ -1,12 +1,14 @@
+import json
 from typing import Optional
-from pydantic import BaseModel
+from pydantic import BaseModel, Field,ConfigDict
 from data_module import DataInterface, DataListInterface
 
 class EmojiData(BaseModel,DataInterface):
+    model_config = ConfigDict(json_schema_serialization_defaults_required=True)
     _data : dict
     _desc_data : dict
-    emoji_description: Optional[str] = None
-    emoji_unicode: Optional[str] = None
+    emoji_description: str = Field(default=None,description="")
+    emoji_unicode: str = Field(default=None,description="")
     def __init__(self, data: dict):
         super().__init__(**data)
         self._init_desc_data()
@@ -30,8 +32,9 @@ class EmojiData(BaseModel,DataInterface):
             return self.emoji_description,self.emoji_description
         elif index == 2:
             return self.emoji_unicode,self.emoji_unicode
-    def to_json_struct(self):
-        print(self.model_dump_json())
+    @staticmethod
+    def to_json_struct()->str:
+        return json.dumps(EmojiData.model_json_schema(mode='serialization'), indent=2)
 
 class EmojiDataList(DataListInterface):
     def __init__(self, data: list):

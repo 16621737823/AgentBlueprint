@@ -8,7 +8,8 @@ class DataInterface:
     def get_property_from_index(self, index:int)->(any, str):
         raise NotImplementedError
 
-    def to_json_struct(self):
+    @staticmethod
+    def to_json_struct():
         raise NotImplementedError
 
 
