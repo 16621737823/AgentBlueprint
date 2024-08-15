@@ -6,19 +6,19 @@ message NodeConnector{
   map<int32,DataNode> input_data = 1;
 }
 message TaskNode{
-  uint64 node_id = 1;
+  uint64 node_id = 1;//in file increment id, unique within file
   NodeConnector node_structure = 2;
   FunctionParams function_param = 3;
 }
 message DataNode{
-  uint64 node_id = 1;
-  string uuid = 2;
-  NodeConnector node_structure = 3;
+  uint64 data_id = 1;
+  uint32 source_id = 2; //data source id,either be database or previous task node output
+  string package_uuid = 3;
+  NodeConnector node_structure = 4;
 }
 
 message apmFile{
   repeated TaskNode nodes = 1;
-
 }
 
 //into raw data slot in NodeData

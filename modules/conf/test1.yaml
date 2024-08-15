@@ -3,6 +3,7 @@ DataDescriptor:
   None: #Generate by Default
     Single: 00
     List: 01
+    Previous: 02
   Current:
     Current: 20
 

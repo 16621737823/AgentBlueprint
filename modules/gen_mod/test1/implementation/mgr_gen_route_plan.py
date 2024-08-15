@@ -17,6 +17,7 @@ class RoutePlanManager(DataManagerInterface):
 
     @staticmethod
     def fetch_connected_data(ctx: QueryContext):
+
         origin = ctx.get_param_data(1)
         if origin is None:
             raise ValueError("Missing required value for parameter Origin")

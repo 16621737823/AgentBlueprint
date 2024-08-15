@@ -198,6 +198,7 @@ def _mgr_gen(data_list: dict, desc_list: dict):
                     file.write("        #TODO: implement me, this is where connects to a datasource, could be a database or a service\n")
                     file.write("        raise NotImplementedError\n")
                     file.write("\n")
+
                     for desc_type in value["descriptor"] if value["descriptor"] is not None else []:
                         for (desc_key, desc) in desc_list[desc_type].items():
                             snake_desc_key = re.sub('([a-z0-9])([A-Z])', r'\1_\2', desc_key).lower()
