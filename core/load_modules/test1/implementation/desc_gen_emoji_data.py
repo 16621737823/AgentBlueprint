@@ -6,6 +6,9 @@ class EmojiData(BaseModel,DataInterface):
     _desc_data : dict
     emoji_description: str = Field(description="")
     emoji_unicode: str = Field(description="")
+    def __init__(self,**data):
+        super().__init__(**data)
+        self._init_desc_data()
     def __str__(self):
         return "".join(self._desc_data[key] + "." for key in self.model_fields.keys() if getattr(self,key) is not None).strip(".")
     def get_str(self,key:str):
@@ -14,7 +17,6 @@ class EmojiData(BaseModel,DataInterface):
         else:
             return ""
 
-    @model_validator(mode='after')
     def _init_desc_data(self):
         #Can be overriden to add more description
         self._desc_data = {
@@ -25,9 +27,9 @@ class EmojiData(BaseModel,DataInterface):
         if index == 0:
             return self,str(self)
         elif index == 1:
-            return self.emoji_description,self.emoji_description
+            return self.emoji_description,str(self.emoji_description)
         elif index == 2:
-            return self.emoji_unicode,self.emoji_unicode
+            return self.emoji_unicode,str(self.emoji_unicode)
     @staticmethod
     def to_dict_struct()->dict[str,any]:
         return EmojiData.model_json_schema(mode='serialization')

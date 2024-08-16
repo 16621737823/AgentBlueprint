@@ -29,7 +29,7 @@ class ParsedActionManager(DataManagerInterface):
 
     @staticmethod
     def _single( ctx: DataNodeContext) -> DataInterface or DataListInterface:
-        return ParsedAction(emoji_list=EmojiData(emoji_description="test",emoji_unicode="test"))
+        return ParsedAction(emoji_list=EmojiData(emoji_description="test_emoji_desc",emoji_unicode="test_emoji_unicode"))
 
     @staticmethod
     def _list(ctx: DataNodeContext) -> DataInterface or DataListInterface:

@@ -36,6 +36,7 @@ def deserialize_function_node(node:message.APMFactory_pb2.TaskNode,network:Agent
         "system": system_prompt,
         "text_input": user_input,
     }
+    print(context)
     result, result_str = main_servicer_caller(context)
     return result, result_str
 

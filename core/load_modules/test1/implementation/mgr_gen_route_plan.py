@@ -18,10 +18,10 @@ class RoutePlanManager(DataManagerInterface):
     @staticmethod
     def fetch_connected_data(ctx: DataNodeContext):
         origin = ctx.param_data.get(1)
-        if origin[1] is None or origin[2] is None:
+        if origin[0] is None or origin[1] is None:
             raise ValueError("Missing required value for parameter Origin")
         destination = ctx.param_data.get(2)
-        if destination[1] is None or destination[2] is None:
+        if destination[0] is None or destination[1] is None:
             raise ValueError("Missing required value for parameter Destination")
         # returned values are tuples containing (original value, string value)
         return{
@@ -45,7 +45,7 @@ class RoutePlanManager(DataManagerInterface):
 
     @staticmethod
     def _single(ctx: DataNodeContext,connected_params:dict = None) -> DataInterface or DataListInterface:
-        return RoutePlan(action_description="test",duration=1,start_time=1,end_time=1)
+        return RoutePlan(action_description="test_action_description",duration=1,start_time=1,end_time=1)
 
     @staticmethod
     def _list(ctx: DataNodeContext,connected_params:dict= None) -> DataInterface or DataListInterface:

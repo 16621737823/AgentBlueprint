@@ -8,6 +8,9 @@ class RoutePlan(BaseModel,DataInterface):
     duration: int = Field(description="")
     start_time: int = Field(description="")
     end_time: int = Field(description="")
+    def __init__(self,**data):
+        super().__init__(**data)
+        self._init_desc_data()
     def __str__(self):
         return "".join(self._desc_data[key] + "." for key in self.model_fields.keys() if getattr(self,key) is not None).strip(".")
     def get_str(self,key:str):
@@ -16,7 +19,6 @@ class RoutePlan(BaseModel,DataInterface):
         else:
             return ""
 
-    @model_validator(mode='after')
     def _init_desc_data(self):
         #Can be overriden to add more description
         self._desc_data = {
@@ -29,13 +31,13 @@ class RoutePlan(BaseModel,DataInterface):
         if index == 0:
             return self,str(self)
         elif index == 1:
-            return self.action_description,self.action_description
+            return self.action_description,str(self.action_description)
         elif index == 2:
-            return self.duration,self.duration
+            return self.duration,str(self.duration)
         elif index == 3:
-            return self.start_time,self.start_time
+            return self.start_time,str(self.start_time)
         elif index == 4:
-            return self.end_time,self.end_time
+            return self.end_time,str(self.end_time)
     @staticmethod
     def to_dict_struct()->dict[str,any]:
         return RoutePlan.model_json_schema(mode='serialization')
