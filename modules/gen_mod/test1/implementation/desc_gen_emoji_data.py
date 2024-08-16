@@ -1,22 +1,20 @@
-from pydantic import BaseModel, Field,ConfigDict
+from pydantic import BaseModel, Field,ConfigDict,model_validator
 from data_module import DataInterface, DataListInterface
 
 class EmojiData(BaseModel,DataInterface):
     model_config = ConfigDict(json_schema_serialization_defaults_required=True,extra='forbid')
-    _data : dict
     _desc_data : dict
     emoji_description: str = Field(description="")
     emoji_unicode: str = Field(description="")
-    def __init__(self, data: dict):
-        super().__init__(**data)
-        self._init_desc_data()
     def __str__(self):
-        return "".join(self._desc_data[key] + "." for key in self._data.keys() if self._data[key] is not None).strip(".")
+        return "".join(self._desc_data[key] + "." for key in self.model_fields.keys() if getattr(self,key) is not None).strip(".")
     def get_str(self,key:str):
         if getattr(self,key) is not None:
             return self._desc_data[key]
         else:
             return ""
+
+    @model_validator(mode='after')
     def _init_desc_data(self):
         #Can be overriden to add more description
         self._desc_data = {

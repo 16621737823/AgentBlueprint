@@ -1,5 +1,5 @@
 
-from .context_interface import QueryContext
+from .context_interface import QueryContext, DataNodeContext
 from .data_interface import DataInterface, DataListInterface
 class DataManagerInterface:
     def __init__(self):
@@ -7,7 +7,7 @@ class DataManagerInterface:
         pass
 
     @staticmethod
-    def get_descriptor(desc_index:int, ctx:QueryContext) -> DataInterface:
+    def get_descriptor(desc_index:int, ctx:DataNodeContext) -> DataInterface or DataListInterface:
         raise NotImplementedError
 
     @staticmethod

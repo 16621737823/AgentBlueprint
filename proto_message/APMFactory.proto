@@ -9,6 +9,7 @@ message TaskNode{
   uint64 node_id = 1;//in file increment id, unique within file
   NodeConnector node_structure = 2;
   FunctionParams function_param = 3;
+  uint64 output_data_id = 4;
 }
 message DataNode{
   uint64 data_id = 1;

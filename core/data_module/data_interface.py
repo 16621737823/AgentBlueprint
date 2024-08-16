@@ -4,6 +4,7 @@ from pydantic import BaseModel
 
 
 
+
 class DataInterface:
 
     def get_property_from_index(self, index:int)->(any, str):
@@ -22,11 +23,6 @@ class DataListInterface:
         else:
             raise ValueError("All elements in data must be instances of DataInterface")
 
-    def set(self,data:list):
-        if all(isinstance(item, dict) for item in data):
-            self._data = [DataInterface(item) for item in data]
-        else:
-            raise ValueError("All elements in data must be dictionaries")
 
     @staticmethod
     def to_dict_struct() -> dict[str, any]:
