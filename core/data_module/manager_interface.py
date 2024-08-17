@@ -1,21 +1,20 @@
+from typing import Type
 
 from .context_interface import QueryContext, DataNodeContext
-from .data_interface import DataInterface, DataListInterface
+from .data_interface import DataInterface
 class DataManagerInterface:
     def __init__(self):
         print(self.__class__.__name__ + " is initialized")
         pass
 
     @staticmethod
-    def get_descriptor(desc_index:int, ctx:DataNodeContext) -> DataInterface or DataListInterface:
+    def get_descriptor(desc_index:int, ctx:DataNodeContext) -> DataInterface:
         raise NotImplementedError
-
+    @staticmethod
+    def get_descriptor_class(desc_index:int)->Type:
+        raise NotImplementedError
     @staticmethod
     def get_class()->DataInterface:
-        raise NotImplementedError
-
-    @staticmethod
-    def get_class_list()->DataListInterface:
         raise NotImplementedError
 
     @staticmethod

@@ -30,7 +30,7 @@ def write_test_apm():
             source_id=1,
         )
         test_connect_data_2 = apm.DataNode(
-            data_id=1210030000,
+            data_id=1210030200,
             package_uuid=package_uuid,
             source_id=2,
         )
@@ -59,7 +59,8 @@ def write_test_apm():
                     5: test_data_2,
                 }
             ),
-            output_data_id=1110010200
+            output_data_id=1110010100,
+            package_uuid=package_uuid,
         )
         task_node_2 = apm.TaskNode(
             node_id=2,
@@ -77,6 +78,7 @@ def write_test_apm():
                 }
             ),
             output_data_id=1210030000,
+            package_uuid=package_uuid,
         )
         task_node_3 = apm.TaskNode(
             node_id=3,
@@ -94,6 +96,7 @@ def write_test_apm():
                 }
             ),
             output_data_id=1210030000,
+            package_uuid=package_uuid,
         )
         apm_file.nodes.extend([task_node_1, task_node_2, task_node_3])
         file.write(apm_file.SerializeToString())

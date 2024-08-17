@@ -1,5 +1,6 @@
+from typing import Optional
 from pydantic import BaseModel, Field,ConfigDict,model_validator
-from data_module import DataInterface, DataListInterface
+from data_module import DataInterface
 
 class RoutePlan(BaseModel,DataInterface):
     model_config = ConfigDict(json_schema_serialization_defaults_required=True,extra='forbid')
@@ -18,7 +19,6 @@ class RoutePlan(BaseModel,DataInterface):
             return self._desc_data[key]
         else:
             return ""
-
     def _init_desc_data(self):
         #Can be overriden to add more description
         self._desc_data = {
@@ -38,15 +38,16 @@ class RoutePlan(BaseModel,DataInterface):
             return self.start_time,str(self.start_time)
         elif index == 4:
             return self.end_time,str(self.end_time)
-    @staticmethod
-    def to_dict_struct()->dict[str,any]:
-        return RoutePlan.model_json_schema(mode='serialization')
-
-class RoutePlanList(BaseModel,DataListInterface):
+class RoutePlanList(BaseModel,DataInterface):
     model_config = ConfigDict(json_schema_serialization_defaults_required=True, extra='forbid')
     route_plan_list: list[RoutePlan] = Field(description="")
-    def __init__(self, data: list):
-        super().__init__(data)
-    @staticmethod
-    def to_dict_struct() -> dict[str, any]:
-        return RoutePlanList.model_json_schema(mode='serialization')
+    def __init__(self, **data):
+        super().__init__(**data)
+    def get_property_from_index(self, index: int)->(any, str):
+        list_str = f"{self.__class__.__name__}"
+        list_item = list()
+        for (i, item) in enumerate(self.route_plan_list):
+            item,item_str = item.get_property_from_index(index)
+            list_str += f"{i}: {item_str}\n"
+            list_item.append(item)
+        return list_item,list_str

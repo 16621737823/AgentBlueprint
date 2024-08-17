@@ -1,42 +1,38 @@
-from pydantic import BaseModel, Field, ConfigDict, model_validator
 
-from data_module import DataInterface
+from datetime import datetime
+from typing import Optional, List
 
-class EmojiData(BaseModel,DataInterface):
-    model_config = ConfigDict(json_schema_serialization_defaults_required=True,extra='forbid')
-    _desc_data : dict
+from pydantic import BaseModel, ValidationError, ConfigDict, create_model, Field
+
+class EmojiData(BaseModel):
+    model_config = ConfigDict(json_schema_serialization_defaults_required=True, extra='forbid')
+
     emoji_description: str = Field(description="")
     emoji_unicode: str = Field(description="")
-
     def __init__(self,**data):
         super().__init__(**data)
+class ParsedAction(BaseModel):
+    model_config = ConfigDict(json_schema_serialization_defaults_required=True, extra='forbid')
 
-    def init_desc_data(self):
-        pass
-        #Can be overriden to add more description
+    emoji_list: Optional[EmojiData] = Field(description="")
+    def __init__(self,**data):
+        super().__init__(**data)
+class ParsedActionList(BaseModel):
+    model_config = ConfigDict(json_schema_serialization_defaults_required=True, extra='forbid')
 
+    parsed_action_list: List[ParsedAction] = Field(..., description="A list of parsed actions")
+    def __init__(self,**data):
+        super().__init__(**data)
+        # self._init_desc_data()
 
-
-
-# Define the subclass with a reference to the base model
-class ParsedAction(BaseModel,DataInterface):
-    model_config = ConfigDict(json_schema_serialization_defaults_required=True,extra='forbid')
-    _desc_data : dict
-    emoji_list: EmojiData = Field(description="")
-
-
-    def get_property_from_index(self, index: int) -> (any, str):
-        if index == 0:
-            return self, str(self)
-        elif index == 1:
-            return self.emoji_list, self.emoji_list
-
-    @staticmethod
-    def to_dict_struct() -> dict[str, any]:
-        return ParsedAction.model_json_schema(mode='serialization')
+ResponseModel = create_model(
+    "ResponseModel",
+    agent_response=(str, Field(..., description="the response to the instruction")),
+    data_response=(Optional[ParsedActionList], Field(..., description="the structured summarization of the answer above")),
+    model_config =ConfigDict(json_schema_serialization_defaults_required=True,extra='forbid')
+)
 
 
-a = EmojiData(emoji_description="test", emoji_unicode="test")
-b = ParsedAction(emoji_list=a)
-
-print(b.emoji_list)    # Outputs: Bob (the original Person instance is updated)
+m = ResponseModel.model_validate_json('{"agent_response":"Here is the processed response based on the provided details.","data_response":{"parsed_action_list":[{"emoji_list":{"emoji_description":"test_emoji_desc","emoji_unicode":"test_emoji_unicode"}},{"emoji_list":null}]}}')
+print(m)
+#> id=123 name='James' signup_ts=None

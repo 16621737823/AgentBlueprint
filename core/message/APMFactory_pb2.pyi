@@ -19,16 +19,18 @@ class NodeConnector(_message.Message):
     def __init__(self, input_data: _Optional[_Mapping[int, DataNode]] = ...) -> None: ...
 
 class TaskNode(_message.Message):
-    __slots__ = ("node_id", "node_structure", "function_param", "output_data_id")
+    __slots__ = ("node_id", "node_structure", "function_param", "output_data_id", "package_uuid")
     NODE_ID_FIELD_NUMBER: _ClassVar[int]
     NODE_STRUCTURE_FIELD_NUMBER: _ClassVar[int]
     FUNCTION_PARAM_FIELD_NUMBER: _ClassVar[int]
     OUTPUT_DATA_ID_FIELD_NUMBER: _ClassVar[int]
+    PACKAGE_UUID_FIELD_NUMBER: _ClassVar[int]
     node_id: int
     node_structure: NodeConnector
     function_param: FunctionParams
     output_data_id: int
-    def __init__(self, node_id: _Optional[int] = ..., node_structure: _Optional[_Union[NodeConnector, _Mapping]] = ..., function_param: _Optional[_Union[FunctionParams, _Mapping]] = ..., output_data_id: _Optional[int] = ...) -> None: ...
+    package_uuid: str
+    def __init__(self, node_id: _Optional[int] = ..., node_structure: _Optional[_Union[NodeConnector, _Mapping]] = ..., function_param: _Optional[_Union[FunctionParams, _Mapping]] = ..., output_data_id: _Optional[int] = ..., package_uuid: _Optional[str] = ...) -> None: ...
 
 class DataNode(_message.Message):
     __slots__ = ("data_id", "source_id", "package_uuid", "node_structure")

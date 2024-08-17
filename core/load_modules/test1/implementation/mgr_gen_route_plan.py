@@ -1,20 +1,23 @@
-from data_module import QueryContext, DataInterface, DataListInterface, DataManagerInterface, DataNodeContext, FunctionNodeContext
+from typing import Type
+from data_module import QueryContext, DataInterface, DataManagerInterface, DataNodeContext, FunctionNodeContext
 from . import RoutePlan, RoutePlanList
 
 class RoutePlanManager(DataManagerInterface):
-    @staticmethod
-    def get_class()->DataInterface:
-        return RoutePlan.__mro__[0]
-    @staticmethod
-    def get_class_list()->DataListInterface:
-        return RoutePlanList.__mro__[0]
     @staticmethod
     def set_service_response(response, ctx: FunctionNodeContext):
         if isinstance(response, (RoutePlan, RoutePlanList)):
             ctx.set_query_response(response)
         else:
-            raise ValueError("Response must be an instance of DataInterface or DataListInterface")
+            raise ValueError("Response must be an instance of DataInterface")
 
+    @staticmethod
+    def get_descriptor_class(desc_index:int)->Type:
+        if desc_index == 0:
+            return RoutePlan
+        elif desc_index == 1:
+            return RoutePlanList
+        else:
+            raise ValueError("Invalid Descriptor Index")
     @staticmethod
     def fetch_connected_data(ctx: DataNodeContext):
         origin = ctx.param_data.get(1)
@@ -30,34 +33,34 @@ class RoutePlanManager(DataManagerInterface):
         }
 
     @staticmethod
-    def get_descriptor(desc_index:int, ctx:DataNodeContext) -> DataInterface or DataListInterface:
+    def get_descriptor(desc_index:int, ctx:DataNodeContext) -> DataInterface :
+        if desc_index == 2:
+            return RoutePlanManager._previous(ctx)
         connected_params = RoutePlanManager.fetch_connected_data(ctx)
         if desc_index == 0:
             return RoutePlanManager._single(ctx, connected_params)
         elif desc_index == 1:
             return RoutePlanManager._list(ctx, connected_params)
-        elif desc_index == 2:
-            return RoutePlanManager._previous(ctx, connected_params)
         elif desc_index == 20:
             return RoutePlanManager._current(ctx, connected_params)
         else:
             raise ValueError("Invalid Descriptor Index")
 
     @staticmethod
-    def _single(ctx: DataNodeContext,connected_params:dict = None) -> DataInterface or DataListInterface:
-        return RoutePlan(action_description="test_action_description",duration=1,start_time=1,end_time=1)
+    def _single(ctx: DataNodeContext,connected_params:dict = None) -> DataInterface:
+        return RoutePlan(action_description="test_action_description", duration=1, start_time=1, end_time=1)
 
     @staticmethod
-    def _list(ctx: DataNodeContext,connected_params:dict= None) -> DataInterface or DataListInterface:
+    def _list(ctx: DataNodeContext,connected_params:dict= None) -> DataInterface :
         #TODO: implement me, this is where connects to a datasource, could be a database or a service
         raise NotImplementedError
 
     @staticmethod
-    def _previous(ctx: DataNodeContext,connected_params:dict= None) -> DataInterface or DataListInterface:
+    def _previous(ctx: DataNodeContext,connected_params:dict= None) -> DataInterface :
         return ctx.get_reference_context(ctx.source_index)
 
     @staticmethod
-    def _current(ctx: DataNodeContext,connected_params:dict= None) -> DataInterface or DataListInterface:
+    def _current(ctx: DataNodeContext,connected_params:dict= None) -> DataInterface :
         #TODO: implement me, this is where connects to a datasource, could be a database or a service
         raise NotImplementedError
 

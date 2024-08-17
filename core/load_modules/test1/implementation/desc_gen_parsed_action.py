@@ -1,11 +1,12 @@
+from typing import Optional
 from pydantic import BaseModel, Field,ConfigDict,model_validator
-from data_module import DataInterface, DataListInterface
+from data_module import DataInterface
 
 from .desc_gen_emoji_data import EmojiData
 class ParsedAction(BaseModel,DataInterface):
     model_config = ConfigDict(json_schema_serialization_defaults_required=True,extra='forbid')
     _desc_data : dict
-    emoji_list: EmojiData = Field(description="")
+    emoji_list: Optional[EmojiData] = Field(description="")
     def __init__(self,**data):
         super().__init__(**data)
         self._init_desc_data()
@@ -16,7 +17,6 @@ class ParsedAction(BaseModel,DataInterface):
             return self._desc_data[key]
         else:
             return ""
-
     def _init_desc_data(self):
         #Can be overriden to add more description
         self._desc_data = {
@@ -27,15 +27,16 @@ class ParsedAction(BaseModel,DataInterface):
             return self,str(self)
         elif index == 1:
             return self.emoji_list,str(self.emoji_list)
-    @staticmethod
-    def to_dict_struct()->dict[str,any]:
-        return ParsedAction.model_json_schema(mode='serialization')
-
-class ParsedActionList(BaseModel,DataListInterface):
+class ParsedActionList(BaseModel,DataInterface):
     model_config = ConfigDict(json_schema_serialization_defaults_required=True, extra='forbid')
     parsed_action_list: list[ParsedAction] = Field(description="")
-    def __init__(self, data: list):
-        super().__init__(data)
-    @staticmethod
-    def to_dict_struct() -> dict[str, any]:
-        return ParsedActionList.model_json_schema(mode='serialization')
+    def __init__(self, **data):
+        super().__init__(**data)
+    def get_property_from_index(self, index: int)->(any, str):
+        list_str = f"{self.__class__.__name__}"
+        list_item = list()
+        for (i, item) in enumerate(self.parsed_action_list):
+            item,item_str = item.get_property_from_index(index)
+            list_str += f"{i}: {item_str}\n"
+            list_item.append(item)
+        return list_item,list_str

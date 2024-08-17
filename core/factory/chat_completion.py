@@ -4,7 +4,7 @@ import openai
 from openai import OpenAI
 from pydantic import BaseModel
 
-_chat_template = {
+_struct_template = {
     "type": "json_schema",
     "json_schema": {
         "name": "model_response",
@@ -25,11 +25,11 @@ _chat_template = {
 }
 def add_data_struct_to_template(struct_dict:dict):
     if "$defs" in struct_dict:
-        _chat_template["json_schema"]["schema"]["$defs"] = struct_dict["$defs"]
+        _struct_template["json_schema"]["schema"]["$defs"] = struct_dict["$defs"]
         del struct_dict["$defs"]
-    _chat_template["json_schema"]["schema"]["properties"]["data_response"] = struct_dict
-    _chat_template["json_schema"]["schema"]["properties"]["data_response"]["description"] = "the structured summarization of the answer above"
-    return _chat_template
+    _struct_template["json_schema"]["schema"]["properties"]["data_response"] = struct_dict
+    _struct_template["json_schema"]["schema"]["properties"]["data_response"]["description"] = "the structured summarization of the answer above"
+    return _struct_template
 
 class FunctionCall:
     def __init__(self,config:dict):

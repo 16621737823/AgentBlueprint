@@ -1,10 +1,10 @@
 import threading
-from typing import Optional, Any, Dict, Tuple
+from typing import Optional, Any, Dict, Tuple, Union
 
 from pydantic import BaseModel, ConfigDict, Field, PrivateAttr
 from pydantic._internal._model_construction import ModelMetaclass
 from pydantic.dataclasses import dataclass
-from .data_interface import DataInterface,DataListInterface
+from .data_interface import DataInterface
 from enum import Enum
 
 
@@ -36,13 +36,13 @@ class QueryResult(BaseModel):
     data_instance: "DataInstanceContext" = None
     source_query_context: "QueryContext" = None
     #data_type_index: int = 0 #seems that we dont have to specify which of the certain type of data is being referred to
-    cached_data: DataInterface or DataListInterface = None
+    cached_data: DataInterface = None
 
 
 
 class SessionContext(BaseModel):
-    query_result: Optional[Dict[int, QueryResult]] = None
-    def get_cached_data(self, target_index:int)-> DataInterface or DataListInterface:
+    query_result: Optional[Dict[int, QueryResult]] = {}
+    def get_cached_data(self, target_index:int)-> DataInterface:
         if self.query_result is not None and target_index in self.query_result:
             return self.query_result[target_index].cached_data
         else:
@@ -66,12 +66,12 @@ class QueryContext(BaseModel):
         arbitrary_types_allowed = True
 
     usr_prompt: Optional[str] = ""
-    usr_input_data: Optional[Dict[int, DataInterface or DataListInterface]] = None
+    usr_input_data: Optional[Dict[int, DataInterface]] = None
     # context_root: DataInstanceContext = None # converged with session_ctx
-    root_cache: Optional[Dict[int, DataInterface or DataListInterface]] = {}
+    root_cache: Optional[Dict[int, DataInterface]] = {}
     session: SessionContext = None
     # response: Optional[Any] = None # equivalent to cached_data in QueryResult
-    def get_reference_context(self, target_index:int)->DataInterface or DataListInterface:
+    def get_reference_context(self, target_index:int)->DataInterface :
         if self.session != None:
             return self.session.get_cached_data(target_index)
         else:
@@ -102,7 +102,7 @@ class DataNodeContext(QueryContext):
 
 class FunctionNodeContext(QueryContext):
     task_id: int = 0
-    def set_query_response(self, response_data:DataInterface or DataListInterface):
+    def set_query_response(self, response_data:DataInterface ):
         if self.session is not None:
             self.session.query_result[self.task_id] = QueryResult(data_instance=DataInstanceContext(),source_query_context=self,cached_data=response_data)
         else:

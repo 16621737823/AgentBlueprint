@@ -10,6 +10,7 @@ message TaskNode{
   NodeConnector node_structure = 2;
   FunctionParams function_param = 3;
   uint64 output_data_id = 4;
+  string package_uuid = 5;
 }
 message DataNode{
   uint64 data_id = 1;

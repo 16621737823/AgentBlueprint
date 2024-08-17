@@ -1,23 +1,26 @@
-from data_module import QueryContext, DataInterface, DataListInterface, DataManagerInterface, DataNodeContext, FunctionNodeContext
+from typing import Type
+from data_module import QueryContext, DataInterface, DataManagerInterface, DataNodeContext, FunctionNodeContext
 from . import ParsedAction, ParsedActionList
 
 from .desc_gen_emoji_data import EmojiData
 class ParsedActionManager(DataManagerInterface):
     @staticmethod
-    def get_class()->DataInterface:
-        return ParsedAction.__mro__[0]
-    @staticmethod
-    def get_class_list()->DataListInterface:
-        return ParsedActionList.__mro__[0]
-    @staticmethod
     def set_service_response(response, ctx: FunctionNodeContext):
         if isinstance(response, (ParsedAction, ParsedActionList)):
             ctx.set_query_response(response)
         else:
-            raise ValueError("Response must be an instance of DataInterface or DataListInterface")
+            raise ValueError("Response must be an instance of DataInterface")
 
     @staticmethod
-    def get_descriptor(desc_index:int, ctx:DataNodeContext) -> DataInterface or DataListInterface:
+    def get_descriptor_class(desc_index:int)->Type:
+        if desc_index == 0:
+            return ParsedAction
+        elif desc_index == 1:
+            return ParsedActionList
+        else:
+            raise ValueError("Invalid Descriptor Index")
+    @staticmethod
+    def get_descriptor(desc_index:int, ctx:DataNodeContext) -> DataInterface :
         if desc_index == 0:
             return ParsedActionManager._single(ctx)
         elif desc_index == 1:
@@ -28,15 +31,15 @@ class ParsedActionManager(DataManagerInterface):
             raise ValueError("Invalid Descriptor Index")
 
     @staticmethod
-    def _single( ctx: DataNodeContext) -> DataInterface or DataListInterface:
+    def _single( ctx: DataNodeContext) -> DataInterface :
         return ParsedAction(emoji_list=EmojiData(emoji_description="test_emoji_desc",emoji_unicode="test_emoji_unicode"))
 
     @staticmethod
-    def _list(ctx: DataNodeContext) -> DataInterface or DataListInterface:
+    def _list(ctx: DataNodeContext) -> DataInterface:
         #TODO: implement me, this is where connects to a datasource, could be a database or a service
         raise NotImplementedError
 
     @staticmethod
-    def _previous(ctx: DataNodeContext) -> DataInterface or DataListInterface:
+    def _previous(ctx: DataNodeContext) -> DataInterface:
         return ctx.get_reference_context(ctx.source_index)
 
