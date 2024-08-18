@@ -16,11 +16,10 @@ formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(messag
 handler.setFormatter(formatter)
 logger.addHandler(handler)
 
-def run_session(node:message.APMFactory_pb2.apmFile, network:AgentNetworkInterface):
+async def run_session(node:message.APMFactory_pb2.apmFile, network:AgentNetworkInterface):
     session_ctx = SessionContext()
     for task_node in node.nodes:
-        run_function_node(task_node, network, FunctionNodeContext(task_id= task_node.node_id, session=session_ctx))
-        print("Function Executed")
+        yield run_function_node(task_node, network, FunctionNodeContext(task_id= task_node.node_id, session=session_ctx))
 def run_function_node(node:message.APMFactory_pb2.TaskNode, network:AgentNetworkInterface, context: FunctionNodeContext):
     # func_type,func_id = parse_func_index(node.node_id)
     #func_type deprecated, all merged into mainserivcer
@@ -41,7 +40,6 @@ def run_function_node(node:message.APMFactory_pb2.TaskNode, network:AgentNetwork
         "system": system_prompt,
         "text_input": user_input,
     }
-    print(prompt_context)
     output_class = fetch_data_class(node.output_data_id, node.package_uuid, network)
     result_str = main_servicer_caller(prompt_context, output_class)
     data_result = parse_data(output_class, result_str)

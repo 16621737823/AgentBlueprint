@@ -24,8 +24,8 @@ def create_response_model(nested_cls, **kwargs):
     model_config =ConfigDict(json_schema_serialization_defaults_required=True,extra='forbid')
 )
 def extract_data(data:str,nested_cls):
-    response_model = create_response_model(nested_cls).model_validate_json(data)
-    struct_data = response_model
+    response_model = create_response_model(nested_cls)
+    struct_data = response_model.model_validate_json(data)
     return struct_data.data_response
 def add_data_struct_to_template(struct_dict:dict):
    _struct_template["json_schema"]["schema"]= struct_dict
@@ -44,7 +44,6 @@ def main_servicer_caller(context:dict,output_struct):
             ],
             response_format=struct,
         )
-        print(response)
         return response.choices[0].message.content
     except Exception as e:
         return e

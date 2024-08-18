@@ -4,3 +4,4 @@ openai
 pyyaml
 pandas
 openai
+"fastapi[standard]"

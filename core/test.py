@@ -1,3 +1,5 @@
+import asyncio
+
 from dotenv import load_dotenv
 load_dotenv()
 from agent.agent_instance import AgentNetwork
@@ -13,4 +15,9 @@ mgr = agent.get_data_manager(uuid, 1003)
 # print(FunctionCall({}).run(struct_json))
 write_test_apm()
 apm_struct = read_test_apm()
-run_session(apm_struct, agent)
+
+async def call():
+    async for response in run_session(apm_struct, agent):
+        print(response)
+
+asyncio.run(call())
