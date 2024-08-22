@@ -22,17 +22,22 @@ formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
 handler.setFormatter(formatter)
 logger.addHandler(handler)
 
-def _convert_2_python_type(type: str)->(bool,str):
-    if type == "string":
-        return True, "str"
-    elif type == "bool":
-        return True,"bool"
-    elif type == "int32" or type == "uint32" or type == "int64" or type == "uint64":
-        return True,"int"
-    elif type == "float32" or type == "float64":
-        return True,"float"
+def _convert_2_python_type(type: str)->(bool,bool,str):
+    pure_type = type
+    is_list = False
+    if type.startswith("[]"):
+        pure_type = type[2:]
+        is_list = True
+    if pure_type == "string":
+        return True,is_list, "str"
+    elif pure_type == "bool":
+        return True,is_list,"bool"
+    elif pure_type == "int32" or pure_type == "uint32" or pure_type == "int64" or pure_type == "uint64":
+        return True,is_list,"int"
+    elif pure_type == "float32" or pure_type == "float64":
+        return True,is_list,"float"
     else:
-        return False,type
+        return False,is_list,pure_type
 
 def _desc_gen(data_list: dict):
 
@@ -48,10 +53,14 @@ def _desc_gen(data_list: dict):
                 for (prop_key, prop) in value["property"].items():
                     snake_prop_key = re.sub('([a-z0-9])([A-Z])', r'\1_\2', prop_key).lower()
                     # camel_prop_key = snake_prop_key.replace("_", " ").title().replace(" ", "")
-                    is_base_type, prop_type = _convert_2_python_type(prop["type"])
+                    is_base_type,is_list, prop_type = _convert_2_python_type(prop["type"])
                     snake_type_key = re.sub('([a-z0-9])([A-Z])', r'\1_\2', prop["type"]).lower()
                     if is_base_type:
-                        params += f"    {snake_prop_key}: {prop_type} = Field(description=\"\")\n"
+                        if is_list:
+                            file.write(f"from typing import List\n")
+                            params += f"    {snake_prop_key}: List[{prop_type}] = Field(description=\"\")\n"
+                        else:
+                            params += f"    {snake_prop_key}: {prop_type} = Field(description=\"\")\n"
                     else:
                         file.write(f"from .desc_gen_{snake_type_key} import {prop_type}\n")
                         params += f"    {snake_prop_key}: Optional[{prop_type}] = Field(description=\"\")\n"
@@ -113,7 +122,7 @@ def _mgr_gen(data_list: dict, desc_list: dict):
                 file.write("from data_module import QueryContext, DataInterface, DataManagerInterface, DataNodeContext, FunctionNodeContext\n")
                 file.write(f"from . import {key}, {key}List\n\n")
                 for (prop_key, prop) in value["property"].items():
-                    is_base_type, prop_type = _convert_2_python_type(prop["type"])
+                    is_base_type,is_list, prop_type = _convert_2_python_type(prop["type"])
                     snake_type_key = re.sub('([a-z0-9])([A-Z])', r'\1_\2', prop["type"]).lower()
                     if not is_base_type:
                         file.write(f"from .desc_gen_{snake_type_key} import {prop_type}\n")

@@ -7,7 +7,7 @@ DataDescriptor:
   Current:
     Current: 20
 
-#Support int32 || string || bool || uint64 || float32 || uint32
+#Support int32 || string || bool || uint64 || float32 || uint32 || int64
 GeneralData:
   ParsedAction:
     index: 1001
@@ -15,6 +15,13 @@ GeneralData:
       EmojiList:
         index: 01
         type: "EmojiData"
+    descriptor:
+  Calendar:
+    index: 1002
+    property:
+      Summary:
+        index: 01
+        type: "[]string"
     descriptor:
 
 InternalData:
