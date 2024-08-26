@@ -54,7 +54,7 @@ def _desc_gen(data_list: dict):
                     snake_prop_key = re.sub('([a-z0-9])([A-Z])', r'\1_\2', prop_key).lower()
                     # camel_prop_key = snake_prop_key.replace("_", " ").title().replace(" ", "")
                     is_base_type,is_list, prop_type = _convert_2_python_type(prop["type"])
-                    snake_type_key = re.sub('([a-z0-9])([A-Z])', r'\1_\2', prop["type"]).lower()
+                    snake_type_key = re.sub('([a-z0-9])([A-Z])', r'\1_\2', prop_type).lower()
                     if is_base_type:
                         if is_list:
                             file.write(f"from typing import List\n")
@@ -62,8 +62,13 @@ def _desc_gen(data_list: dict):
                         else:
                             params += f"    {snake_prop_key}: {prop_type} = Field(description=\"\")\n"
                     else:
-                        file.write(f"from .desc_gen_{snake_type_key} import {prop_type}\n")
-                        params += f"    {snake_prop_key}: Optional[{prop_type}] = Field(description=\"\")\n"
+                        if is_list:
+                            file.write(f"from typing import List\n")
+                            file.write(f"from .desc_gen_{snake_type_key} import {prop_type}\n")
+                            params += f"    {snake_prop_key}: List[{prop_type}] = Field(description=\"\")\n"
+                        else:
+                            file.write(f"from .desc_gen_{snake_type_key} import {prop_type}\n")
+                            params += f"    {snake_prop_key}: Optional[{prop_type}] = Field(description=\"\")\n"
                 file.write(f"class {key}(BaseModel,DataInterface):\n")
                 file.write("    model_config = ConfigDict(json_schema_serialization_defaults_required=True,extra='forbid')\n")
                 file.write("    _desc_data : dict\n")
@@ -123,7 +128,7 @@ def _mgr_gen(data_list: dict, desc_list: dict):
                 file.write(f"from . import {key}, {key}List\n\n")
                 for (prop_key, prop) in value["property"].items():
                     is_base_type,is_list, prop_type = _convert_2_python_type(prop["type"])
-                    snake_type_key = re.sub('([a-z0-9])([A-Z])', r'\1_\2', prop["type"]).lower()
+                    snake_type_key = re.sub('([a-z0-9])([A-Z])', r'\1_\2', prop_type).lower()
                     if not is_base_type:
                         file.write(f"from .desc_gen_{snake_type_key} import {prop_type}\n")
                 file.write(f"class {camel_key}Manager(DataManagerInterface):\n")

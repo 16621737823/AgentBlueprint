@@ -14,7 +14,7 @@ GeneralData:
     property:
       EmojiList:
         index: 01
-        type: "EmojiData"
+        type: "[]EmojiData"
     descriptor:
   Calendar:
     index: 1002

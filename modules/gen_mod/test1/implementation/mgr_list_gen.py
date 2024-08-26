@@ -1,4 +1,4 @@
 import uuid
-from . import  ParsedActionManager, RoutePlanManager
+from . import  ParsedActionManager, CalendarManager, RoutePlanManager
 def get_mgr_list():
-    return "4d963e3b-5caa-11ef-b9d0-e4fd458784c5",{ 1001: ParsedActionManager, 1003: RoutePlanManager}
+    return "051f32b2-6395-11ef-9890-047c168941e2",{ 1001: ParsedActionManager, 1002: CalendarManager, 1003: RoutePlanManager}
