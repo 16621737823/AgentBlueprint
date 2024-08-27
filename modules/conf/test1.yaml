@@ -14,13 +14,28 @@ GeneralData:
     property:
       EmojiList:
         index: 01
-        type: "[]EmojiData"
+        type: "EmojiData"
     descriptor:
   Calendar:
-    index: 1002
+    index: 3002
     property:
       Summary:
         index: 01
+        type: string
+      Location:
+        index: 02
+        type: string
+      Description:
+        index: 03
+        type: string
+      StartTime:
+        index: 04
+        type: int32
+      EndTime:
+        index: 05
+        type: int32
+      attendees:
+        index: 06
         type: "[]string"
     descriptor:
 
@@ -34,6 +49,28 @@ InternalData:
       EmojiUnicode:
         index: 02
         type: string
+    descriptor:
+  TransitDetails:
+    index: 1004
+    property:
+      ArrivalStop:
+        index: 01
+        type: string
+      DepartureStop:
+        index: 02
+        type: string
+      ArrivalTime:
+        index: 03
+        type: int32
+      DepartureTime:
+        index: 04
+        type: int32
+      TravelMethod:
+        index: 05
+        type: string
+      StopCount:
+        index: 06
+        type: int32
     descriptor:
 
 # Connector Data Index Parameters Connects to Specific Data Index Properties
@@ -60,7 +97,11 @@ ConnectorData:
       EndTime:
         index: 04
         type: uint64
+      TransitDetails:
+        index: 05
+        type: "[]TransitDetails"
     descriptor:
       - Current
+
 
 

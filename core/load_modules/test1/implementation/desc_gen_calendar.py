@@ -3,14 +3,15 @@ from pydantic import BaseModel, Field,ConfigDict,model_validator
 from data_module import DataInterface
 
 from typing import List
-class RoutePlan(BaseModel,DataInterface):
+class Calendar(BaseModel,DataInterface):
     model_config = ConfigDict(json_schema_serialization_defaults_required=True,extra='forbid')
     _desc_data : dict
-    action_description: str = Field(description="")
-    duration: int = Field(description="")
+    summary: str = Field(description="")
+    location: str = Field(description="")
+    description: str = Field(description="")
     start_time: int = Field(description="")
     end_time: int = Field(description="")
-    transit_details: List[str] = Field(description="")
+    attendees: List[str] = Field(description="")
     def __init__(self,**data):
         super().__init__(**data)
         self._init_desc_data()
@@ -24,34 +25,37 @@ class RoutePlan(BaseModel,DataInterface):
     def _init_desc_data(self):
         #Can be overriden to add more description
         self._desc_data = {
-            "action_description": f"RoutePlan's ActionDescription is {str(self.action_description)}",
-            "duration": f"RoutePlan's Duration is {str(self.duration)}",
-            "start_time": f"RoutePlan's StartTime is {str(self.start_time)}",
-            "end_time": f"RoutePlan's EndTime is {str(self.end_time)}",
-            "transit_details": f"RoutePlan's TransitDetails is {str(self.transit_details)}",
+            "summary": f"Calendar's Summary is {str(self.summary)}",
+            "location": f"Calendar's Location is {str(self.location)}",
+            "description": f"Calendar's Description is {str(self.description)}",
+            "start_time": f"Calendar's StartTime is {str(self.start_time)}",
+            "end_time": f"Calendar's EndTime is {str(self.end_time)}",
+            "attendees": f"Calendar's attendees is {str(self.attendees)}",
         }
     def get_property_from_index(self,index: int)->(any, str):
         if index == 0:
             return self,str(self)
         elif index == 1:
-            return self.action_description,str(self.action_description)
+            return self.summary,str(self.summary)
         elif index == 2:
-            return self.duration,str(self.duration)
+            return self.location,str(self.location)
         elif index == 3:
-            return self.start_time,str(self.start_time)
+            return self.description,str(self.description)
         elif index == 4:
-            return self.end_time,str(self.end_time)
+            return self.start_time,str(self.start_time)
         elif index == 5:
-            return self.transit_details,str(self.transit_details)
-class RoutePlanList(BaseModel,DataInterface):
+            return self.end_time,str(self.end_time)
+        elif index == 6:
+            return self.attendees,str(self.attendees)
+class CalendarList(BaseModel,DataInterface):
     model_config = ConfigDict(json_schema_serialization_defaults_required=True, extra='forbid')
-    route_plan_list: list[RoutePlan] = Field(description="")
+    calendar_list: list[Calendar] = Field(description="")
     def __init__(self, **data):
         super().__init__(**data)
     def get_property_from_index(self, index: int)->(any, str):
         list_str = f"{self.__class__.__name__}"
         list_item = list()
-        for (i, item) in enumerate(self.route_plan_list):
+        for (i, item) in enumerate(self.calendar_list):
             item,item_str = item.get_property_from_index(index)
             list_str += f"{i}: {item_str}\n"
             list_item.append(item)
