@@ -53,7 +53,7 @@ class RoutePlanManager(DataManagerInterface):
     @staticmethod
     def _single(ctx: DataNodeContext,connected_params:dict = None) -> DataInterface:
         url = 'https://routes.googleapis.com/directions/v2:computeRoutes'
-        api_key = 'AIzaSyAw5VzPQVioKYFmKiS72ucZGymcYl_cFRc'
+        api_key = 'api_key'
 
         headers = {
             'Content-Type': 'application/json',
